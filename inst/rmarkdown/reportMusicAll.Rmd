@@ -1,0 +1,74 @@
+---
+title: "Deconvolution using singleCellTK package"
+author: "`r params$authors`"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+params:
+  inSCE: inSCE 
+  bulkData: bulkData
+  analysisName: analysisName
+  analysisType: analysisType
+  heatmapTitle: heatmapTitle
+  markers: markers 
+  clusters: clusters 
+  samples: samples
+  preClusterlist: preClusterlist
+  DEmarkers: DEmarkers
+  groups: groups
+  selectCt: selectCt
+  cellSize: cellSize
+  ctCov: ctCov
+  verbose: verbose
+  iterMax: iterMax
+  nu: nu
+  eps: eps
+  centered: eps
+  normalize: normalize
+  nonZero: nonZero
+---
+
+```{r global options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+
+```{r}
+library(dplyr)
+library(singleCellTK)
+library(MuSiC)
+library(SingleCellExperiment)
+library(S4Vectors)
+
+```
+
+
+# run Music wrapper
+```{r, echo=FALSE, warning=FALSE, results='asis', message=FALSE}
+headingNorm <- "##"
+repMusicRun <- knitr::knit_child('reportMusicRun.RMD', quiet = TRUE, envir = environment())
+```
+
+# Plot music results
+
+```{r, echo=FALSE,results='asis',message=FALSE, warning=FALSE}
+headingFS <- "##"
+repPlots <- knitr::knit_child('reportMusicResults.RMD', quiet = TRUE, envir = environment())
+```
+
+
+```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+cat(repMusicRun, sep = '\n')
+cat(repPlots, sep = '\n')
+```
+
+
+
+
+
+
+
+

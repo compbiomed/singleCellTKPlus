@@ -10,14 +10,17 @@
 #'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
 
-library(singleCellTK)
+require(singleCellTK)
+require(ggplot2)
+require(dplyr)
+require(S4Vectors)
+require(SingleCellExperiment)
 
 
 plotMusicResults<- function(inSCE, 
                             analysisType = c("EstCellProp","PreGroupedClustProp","SingleCellClust"),
                             heatmapTitle = NULL,
-                            analysisName = NULL,
-                            useAssay = NULL){
+                            analysisName = NULL){
   
   
   # Plot clusters
@@ -40,7 +43,7 @@ plotMusicResults<- function(inSCE,
   
   .plotHeatmap<- function(inSCE, # 
                           analysisName,
-                          heatmapTitle = NULL, 
+                          heatmapTitle = heatmapTitle, 
                           useAssay = useAssay){
     
     

@@ -1,0 +1,99 @@
+---
+title: "Single Cell Deconvolution with MuSiC using singleCellTK package"
+author: "Amulya Shastry"
+date: "2022-10-25"
+output: html_document
+params: 
+  inSCE: inSCE
+  bulkData: bulkData
+  analysisName: analysisName
+  analysisType: params$analysisType
+  heatmapTitle: heatmapTitle
+  markers: markers 
+  clusters: clusters 
+  samples: samples
+  preClusterlist: preClusterlist
+  DEmarkers: DEmarkers
+  groups: groups
+  selectCt: selectCt
+  cellSize: cellSize
+  ctCov: ctCov
+  verbose: verbose
+  iterMax: iterMax
+  nu: nu
+  eps: eps
+  centered: centered
+  normalize: normalize
+  nonZero: nonZero
+  
+---
+
+
+
+```{r MuSiC_lib, message = FALSE, include = FALSE}
+require(singleCellTK)
+require(ggplot2)
+require(dplyr)
+```
+
+
+
+
+```{r}
+inSCE <- params$inSCE
+bulkData <- params$bulkData
+analysisName<-params$analysisName
+analysisType<-params$analysisType
+heatmapTitle<-params$heatmapTitle
+markers = params$markers 
+clusters = params$clusters 
+samples =  params$samples
+preClusterlist = params$preClusterlist
+DEmarkers = params$DEmarkers
+groups = params$groups
+selectCt = params$selectCt
+cellSize = params$cellSize
+ctCov = params$ctCov
+verbose = params$verbose
+iterMax = params$iterMax
+nu = params$nu
+eps = params$eps
+centered = params$centered
+normalize = params$normalize
+nonZero = params$nonZero
+
+musicParams <- list(
+                   inSCE, 
+                   bulkData, 
+                   analysisName,
+                   analysisType, 
+                   markers, 
+                   clusters, 
+                   samples, 
+                   preClusterlist,
+                   DEmarkers,
+                   groups, 
+                   selectCt, 
+                   cellSize, #same as cell_size 
+                   ctCov, #same as ctCov
+                   verbose,
+                   iterMax, #same as iter.max 
+                   nu,
+                   eps,
+                   centered,
+                   normalize,
+                   nonZero)
+
+
+inSCE <- do.call("runMusic", musicParams)
+
+print(musicParams)
+
+```
+
+
+
+
+
+
+
