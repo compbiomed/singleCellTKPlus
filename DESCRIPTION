@@ -1,18 +1,21 @@
 Package: SingleCellTKPlus
-Title: Deconvolution of bulk data using single cell data - Music package wrapper
-Version: 1.0.0.0
-Description: xyz.
+Title: SingleCellTK extra package support
+Version: 0.0.0.9000
+Authors@R: 
+    c(person("Amulya", "Shastry", "shastrya@bu.edu", role = c("aut", "cre")), person(given=c("Joshua", "David"), family="Campbell", email="camp@bu.edu", role=c("aut")))
+Depends:
+    R (>= 4.0),
+    SummarizedExperiment,
+    SingleCellExperiment,
+    DelayedArray,
+    Biobase,
+    singleCellTK,
+    ggplot2,
+    dplyr,
+    MuSiC,
+    magrittr
+Description: Deconvolution of bulk data from single cell datasets by MuSiC tool using singleCellTKExtra package
+License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
-Imports: 
-    dplyr,
-    ggplot2,
-    magrittr,
-    MuSiC,
-    S4Vectors,
-    SinglecellExperiment,
-    singleCellTK
-Suggests: 
-    testthat (>= 3.0.0)
-Config/testthat/edition: 3
