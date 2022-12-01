@@ -2,7 +2,7 @@ Package: SingleCellTKPlus
 Title: SingleCellTK extra package support
 Version: 0.0.0.9000
 Authors@R: 
-    c(person("Amulya", "Shastry", "shastrya@bu.edu", role = c("aut", "cre")), person(given=c("Joshua", "David"), family="Campbell", email="camp@bu.edu", role=c("aut")))
+    c(person(given ="Amulya", family = "Shastry", email = "shastrya@bu.edu", role = c("aut", "cre")), person(given=c("Joshua", "David"), family="Campbell", email="camp@bu.edu", role=c("aut")))
 Depends:
     R (>= 4.0),
     SummarizedExperiment,
