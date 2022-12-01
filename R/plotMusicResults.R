@@ -20,7 +20,11 @@ require(SingleCellExperiment)
 plotMusicResults<- function(inSCE, 
                             analysisType = c("EstCellProp","PreGroupedClustProp","SingleCellClust"),
                             heatmapTitle = NULL,
-                            analysisName = NULL){
+                            analysisName = NULL,
+                            useAssay = NULL,
+                            colDataName = NULL,
+                            rowDataName = NULL,
+                            scale = FALSE){
   
   
   # Plot clusters
@@ -44,7 +48,10 @@ plotMusicResults<- function(inSCE,
   .plotHeatmap<- function(inSCE, # 
                           analysisName,
                           heatmapTitle = heatmapTitle, 
-                          useAssay = useAssay){
+                          useAssay = useAssay,
+                          colDataName = colDataName,
+                          rowDataName = rowDataName,
+                          scale = scale){
     
     
     
@@ -58,7 +65,8 @@ plotMusicResults<- function(inSCE,
                             colLabel = T, 
                             rowTitle = "Subjects",
                             colTitle = "CellType",
-                            title = heatmapTitle)
+                            title = heatmapTitle,
+                            scale = scale)
     return(heatmap)
   }
   
