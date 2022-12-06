@@ -1,7 +1,9 @@
+# runMusic function
+
 #' @title Deconvolution of RNASeq data using single cell data
 #' @description A wrapper that performs deconvolution and clustering using MuSiC tool and 
 #' SingleCellExperiment object
-#' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
+#' @param inSCE A SingleCellExperiment object.
 #' @param analysisType Character. Specify which function to run 
 #'  Available options are  "EstCellProp","PreGroupedClustProp","SingleCellClust"
 #' @param analysisName Character. User-defined analysis name. 
@@ -21,17 +23,15 @@
 #' @param eps Threshold of convergence. Default 0.01,
 #' @param centered logic, subtract avg of Y and D. Default FALSE
 #' @param normalize logic, divide Y and D by their standard deviation. Default FALSE
-#' @return SingleCellExperiment object containing the outputs of the
-#'  specified algorithms in the \link{colData}
-#' of \code{inSCE}.
+#' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
+#' @export
 #' @examples
 #' data(scExample, package = "singleCellTK")
 #' Add bulk data here
 #' \dontrun{
 #' sce <- runMusic(sce,bulkdata, analysisType = "EstCellProp",analysisName = "test")
 #' }
-#' @export
-
+#'
 
 
 #' @rdname s4_methods
@@ -60,6 +60,7 @@ setReplaceMethod("getMusicResults", signature(x = "SingleCellExperiment",y = "ch
   return(x)
 })
 
+#' @export
 
 runMusic<-function(inSCE, 
                    bulkData, #camelcase

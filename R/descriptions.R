@@ -1,3 +1,4 @@
+#' @export
 
 description_runMusic <- function() {
   return(list(

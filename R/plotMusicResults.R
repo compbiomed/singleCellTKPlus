@@ -9,6 +9,8 @@
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
+#' 
+#' @export
 
 require(singleCellTK)
 require(ggplot2)
