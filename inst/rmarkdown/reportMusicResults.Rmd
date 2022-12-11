@@ -1,0 +1,86 @@
+---
+title: "Plotting MuSiC results"
+date: "`r format(Sys.time(), '%B %d, %Y')`"
+output:
+  html_document:
+    number_sections: yes
+    toc: yes
+    code_folding: hide
+params:
+  inSCE: inSCE
+  analysisName: analysisName
+  analysisType: analysisType
+  heatmapTitle: heatmapTitle
+---
+
+
+```{r global options, include = FALSE}
+knitr::opts_chunk$set(warning=FALSE, message=FALSE)
+```
+
+
+
+```{r MuSiC_library, message = FALSE, include = FALSE}
+library(singleCellTK)
+library(ggplot2)
+library(dplyr)
+library(S4Vectors)
+library(SingleCellExperiment)
+```
+
+
+
+```{r MuSiC_params}
+sce <- params$inSCE
+analysisName<-params$analysisName
+analysisType<-params$analysisType
+heatmapTitle<-params$heatmapTitle
+```
+
+
+
+```{r MuSiC_output, results = "asis", fig.align = "center", message=FALSE, warning=FALSE}
+
+results <- plotMusicResults(inSCE = sce, analysisType = analysisType, analysisName = analysisName, heatmapTitle = heatmapTitle)
+
+print(results)
+
+  # Tab for tool results
+ # cat(paste0('# Music Results', ' {.tabset} \n\n'))
+
+  # Subtab for a separate plot of the tool results
+#  cat(paste0('## Heatmap \n\n'))
+#  if (analysisType %in% c("EstCellProp","PreGroupedClustProp")){
+  #metadata(results)[["sctk"]][["music"]][[analysisName]][["Heatmap"]]
+#    print(plots)
+ # }
+  
+#  if(analysisType == "SingleCellClust"){
+  
+ # cat(paste0('## Clusters \n\n'))
+ # metadata(results)[["sctk"]][["music"]][[analysisName]][["clusters"]]
+ #  getMusicPlots(sce,analysisName,"Clusters")
+#    print(plots)
+ # }
+  
+  # Final tab to display the parameters used
+  #cat(paste0('## Parameters \n\n'))
+  #print(params)
+```
+
+
+
+```{r MuSiC_description, include = FALSE, warning = FALSE, message = FALSE}
+description_Music <- description_runMusic()
+
+
+```
+# {.unlisted .unnumbered .toc-ignore}
+
+`r description_runMusic()`
+
+
+
+
+
+
