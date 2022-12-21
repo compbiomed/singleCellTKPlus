@@ -26,10 +26,11 @@
 #' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
 #' @export
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' Add bulk data here
 #' \dontrun{
-#' sce <- runMusic(sce,bulkdata, analysisType = "EstCellProp",analysisName = "test")
+#' data(scExample, package = "singleCellTK")
+#' data("musicBulkexample")
+#' data("musicSCEexample")
+#' sce <- runMusic(musicSCEexample,musicBulkexample, analysisType = "EstCellProp",analysisName = "test")
 #' }
 #'
 
@@ -210,6 +211,14 @@ runMusic<-function(inSCE,
   ## Run the tool
   #####################################################################
   
+  if(length(inSCE) == 0 | length(bulkData) == 0){
+     print("please supply correct SCE object and bulkData object")
+    # break
+  }
+  
+  else{
+  
+  
   # Estimate cell type proportions
   
   if(analysisType == "EstCellProp"){
@@ -294,7 +303,7 @@ runMusic<-function(inSCE,
 
   
   return(inSCE)
-  
+  }
 }
 
 

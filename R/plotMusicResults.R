@@ -26,7 +26,7 @@ plotMusicResults<- function(inSCE,
                             useAssay = NULL,
                             colDataName = NULL,
                             rowDataName = NULL,
-                            scale = FALSE){
+                            scale = TRUE){
   
   
   # Plot clusters
@@ -82,7 +82,7 @@ plotMusicResults<- function(inSCE,
   }
   else if(analysisType == "EstCellProp"){
     
-    plots<-.plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted" ,analysisName = analysisName )
+    plots<-.plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted" ,analysisName = analysisName,scale=scale)
     # Do if else for pulling the assay data and have one single call for the sce heatmap
     
     #metadata(inSCE)$sctk$music[[analysisName]][["Heatmap"]]<- temp_results 
@@ -91,7 +91,7 @@ plotMusicResults<- function(inSCE,
     
   else if(analysisType == "PreGroupedClustProp"){
         
-    plots<- .plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted.cluster",analysisName = analysisName )
+    plots<- .plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted.cluster",analysisName = analysisName, scale = scale)
     #metadata(inSCE)$sctk$music[[analysisName]][["Heatmap"]]<- temp_results 
     
   }
