@@ -13,7 +13,7 @@ Depends:
     ggplot2,
     dplyr,
     MuSiC,
-    TOAST (1.10.1),
+    TOAST,
     magrittr
 Description: Deconvolution of bulk data from single cell datasets by MuSiC tool using singleCellTKExtra package
 License: MIT + file LICENSE
