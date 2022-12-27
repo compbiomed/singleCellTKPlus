@@ -60,10 +60,11 @@ A wrapper that performs deconvolution and clustering using MuSiC tool and
 SingleCellExperiment object
 }
 \examples{
-data(scExample, package = "singleCellTK")
-Add bulk data here
 \dontrun{
-sce <- runMusic(sce,bulkdata, analysisType = "EstCellProp",analysisName = "test")
+data(scExample, package = "singleCellTK")
+data("musicBulkexample")
+data("musicSCEexample")
+sce <- runMusic(musicSCEexample,musicBulkexample, analysisType = "EstCellProp",analysisName = "test")
 }
 
 }

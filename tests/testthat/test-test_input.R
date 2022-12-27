@@ -33,7 +33,7 @@ estplot <- plotMusicResults(inSCE, analysisType ="EstCellProp", analysisName = "
 singlecellplot<- plotMusicResults(inSCE, analysisType ="SingleCellClust", analysisName = "testSingleCellClust")
 
 test_that(desc = "plotting test", {
- 
+  
   expect_equal(class(estplot)[1], "Heatmap")
 })
   

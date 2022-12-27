@@ -74,11 +74,11 @@ A wrapper that performs deconvolution and clustering using MuSiC tool and
 SingleCellExperiment object
 }
 \examples{
-data(scExample, package = "singleCellTK")
-Add bulk data here
 \dontrun{
-reportMusic(inSCE = Mouse.sce, 
-bulkData = mouse_bulk,
+data("musicSCEexample")
+data("musicBulkexample")
+music_sce <- reportMusic(inSCE = musicSCEexample, 
+bulkData = musicBulkexample,
 analysisName = "test1",
 analysisType = "EstCellProp", 
 markers = NULL, 
@@ -100,9 +100,9 @@ nonZero = TRUE)
 output_file = ,
 }
 \dontrun{
-reportMusicResults(inSCE= new_sce_with_music_basis2,
+reportMusicResults(inSCE= music_sce,
                   analysisName = "test2",
-                  analysisType = "SingleCellClust", 
+                  analysisType = "EstCellProp", 
                   heatmapTitle = "test")
 }
 
