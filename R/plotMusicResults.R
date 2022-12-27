@@ -1,3 +1,4 @@
+#' @name plotMusicResults
 #' @title Plotting function of runMusic.R
 #' @description A wrapper that plots heatmap and cluster plots for results from runMusic.R
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.

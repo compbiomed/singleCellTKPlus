@@ -23,6 +23,17 @@
 #' @param eps Threshold of convergence. Default 0.01,
 #' @param centered logic, subtract avg of Y and D. Default FALSE
 #' @param normalize logic, divide Y and D by their standard deviation. Default FALSE
+#' @importFrom tibble rownames_to_column
+#' @importFrom tibble column_to_rownames
+#' @importFrom stats dist
+#' @importFrom S4Vectors metadata
+#' @importFrom MuSiC music_prop
+#' @importFrom MuSiC music_prop.cluster
+#' @importFrom tidyr gather
+#' @importFrom SummarizedExperiment colData
+#' @importFrom dplyr left_join
+#' @importFrom S4Vectors DataFrame
+#' @importFrom stats hclust
 #' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
 #' @export
 #' @examples

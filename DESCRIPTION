@@ -7,17 +7,24 @@ Depends:
     R (>= 4.0),
     SummarizedExperiment,
     SingleCellExperiment,
-    DelayedArray,
     Biobase,
     singleCellTK,
     ggplot2,
     dplyr,
     MuSiC,
     TOAST,
-    magrittr
-Description: Deconvolution of bulk data from single cell datasets by MuSiC tool using singleCellTKExtra package
+    magrittr,
+    tibble,
+    S4Vectors,
+    tidyr
+Suggests:
+    testthat
+Description: "The Single Cell Toolkit (SCTK) in the singleCellTK package provides an interface to popular tools for importing, quality control, analysis, and visualization of single cell RNA-seq data. The singleCellTKPlus package adds functionality to the singleCellTK ecosystem by incorporating tools that are not installable from CRAN, Bioconductor, or Python. These tools are generally located in GitHub repositories and can be installed with "remotes". The Shiny graphical user interface (GUI) in singleCellTK will check for the installation of singleCellTKPlus and, if available, will make these tools available for use."
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
 RoxygenNote: 7.2.1
 Remotes: xuranw/MuSiC
+Imports: 
+    methods,
+    rlang

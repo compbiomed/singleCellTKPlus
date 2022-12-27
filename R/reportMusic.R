@@ -27,11 +27,11 @@
 #' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
 #' @export
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' Add bulk data here
 #' \dontrun{
-#' reportMusic(inSCE = Mouse.sce, 
-#' bulkData = mouse_bulk,
+#' data("musicSCEexample")
+#' data("musicBulkexample")
+#' music_sce <- reportMusic(inSCE = musicSCEexample, 
+#' bulkData = musicBulkexample,
 #' analysisName = "test1",
 #' analysisType = "EstCellProp", 
 #' markers = NULL, 
@@ -53,11 +53,10 @@
 #' output_file = ,
 # ' output_dir = NULL)
 #' }
-
 #' \dontrun{
-#' reportMusicResults(inSCE= new_sce_with_music_basis2,
+#' reportMusicResults(inSCE= music_sce,
 #'                   analysisName = "test2",
-#'                   analysisType = "SingleCellClust", 
+#'                   analysisType = "EstCellProp", 
 #'                   heatmapTitle = "test")
 
 
