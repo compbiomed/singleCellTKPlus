@@ -4,7 +4,7 @@ Version: 0.0.0.9000
 Authors@R: 
     c(person(given ="Amulya", family = "Shastry", email = "shastrya@bu.edu", role = c("aut", "cre")), person(given=c("Joshua", "David"), family="Campbell", email="camp@bu.edu", role=c("aut")))
 Depends:
-    R (>= 4.0),
+    R (>= 4.2.0),
     SummarizedExperiment,
     SingleCellExperiment,
     Biobase,
@@ -27,4 +27,12 @@ RoxygenNote: 7.2.1
 Remotes: xuranw/MuSiC
 Imports: 
     methods,
-    rlang
+    rlang,
+    rmarkdown
+Collate: 
+    'data.R'
+    'descriptions.R'
+    'plotMusicResults.R'
+    'reportMusic.R'
+    'runMusic.R'
+    'utils-pipe.R'

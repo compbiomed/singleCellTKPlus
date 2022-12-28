@@ -1,28 +1,34 @@
 # runMusic function
-
+#'
 #' @title Deconvolution of RNASeq data using single cell data
 #' @description A wrapper that performs deconvolution and clustering using MuSiC tool and 
 #' SingleCellExperiment object
-#' @param inSCE A SingleCellExperiment object.
+#' @param inSCE A \linkS4class{SingleCellExperiment} object with singlecell RNASeq data.
+#' @param bulkData bulk RNASeq matrix object
 #' @param analysisType Character. Specify which function to run 
 #'  Available options are  "EstCellProp","PreGroupedClustProp","SingleCellClust"
 #' @param analysisName Character. User-defined analysis name. 
 #' This will be used as the slot name and results can be stored and retrived from SCE object using this name
-#' @param markers List. list of gene names. Same as group.markers option from MuSiC package. The list include differential expressed genes within groups. 
+#' @param DEmarkers List. list of gene names. Same as group.markers option from MuSiC package. The list include differential expressed genes within groups. 
 #' List name must be the same as `clusters`. Default is NULL
+#' @param markers vector or list of gene names, default as NULL. If NULL, use all genes that provided by both bulk and single cell dataset.
 #' @param clusters character, the colData of single cell dataset used as clusters; Default is "cellType"
-#' @param samples . Default is sampleID.
-#' groups = NULL, 
+#' @param samples Default is sampleID.
+#' @param groups NULL groups passes the column name of higher-cluster in phenoData.
 #' @param selectCt vector of cell types, default as NULL. If NULL, then use all cell types provided by single cell dataset; NULL, #same as select.ct
 #' @param cellSize 	data.frame of cell sizes.same as cell_size; data.frame of cell sizes. 1st column contains the names of cell types, 2nd column has the cell sizes per cell type. Default as NULL. If NULL, then estimate cell size from data;
 #' @param ctCov logical. If TRUE, use the covariance across cell types; #same as ctCov in MuSiC
 #' @param preClusterlist 	list of cell types. The list identify groups of similar cell types.
 #' @param verbose logical, default as TRUE.
-#' @param iter.max 	numeric, maximum iteration number. Default 1000
+#' @param iterMax 	numeric, maximum iteration number, same as iter.max. Default 1000
 #' @param nu  regulation parameter, take care of weight when taking reciprocal 1e-04,
+#' @param nonZero same as non.zero, default is TRUE,
 #' @param eps Threshold of convergence. Default 0.01,
-#' @param centered logic, subtract avg of Y and D. Default FALSE
-#' @param normalize logic, divide Y and D by their standard deviation. Default FALSE
+#' @param centered logic, subtract avg of Y and D. Default FALSE,
+#' @param normalize logic, divide Y and D by their standard deviation. Default FALSE,
+#' @param x A \linkS4class{SingleCellExperiment} object with singlecell RNASeq data,
+#' @param y analysisName,
+#' @param value A \linkS4class{SingleCellExperiment} object with results stored in metadata
 #' @importFrom tibble rownames_to_column
 #' @importFrom tibble column_to_rownames
 #' @importFrom stats dist
@@ -34,44 +40,17 @@
 #' @importFrom dplyr left_join
 #' @importFrom S4Vectors DataFrame
 #' @importFrom stats hclust
-#' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
-#' @export
+#' @return \linkS4class{SingleCellExperiment} object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
 #' @examples
 #' \dontrun{
-#' data(scExample, package = "singleCellTK")
 #' data("musicBulkexample")
 #' data("musicSCEexample")
-#' sce <- runMusic(musicSCEexample,musicBulkexample, analysisType = "EstCellProp",analysisName = "test")
+#' sce <- runMusic(musicSCEexample,musicBulkexample, analysisType = "EstCellProp",analysisName = "test",
+#' analysisType = "EstCellProp", markers = NULL, clusters = "cellType",samples = "sampleID", preClusterlist = NULL,
+#' DEmarkers = NULL,groups = NULL,selectCt = NULL, cellSize = NULL, ctCov = FALSE, verbose = TRUE,iterMax = 1000, 
+#' nu = 1e-04,eps = 0.01,centered = FALSE,normalize = FALSE, nonZero = TRUE)
 #' }
-#'
-
-
-#' @rdname s4_methods
-setGeneric("getMusicResults", signature = c("x","y"),
-           function(x,y) {standardGeneric("getMusicResults")}
-)
-
-setClass("y", representation(name = "character"))
-
-
-#' @rdname s4_methods
-setMethod("getMusicResults", signature = c(x = "SingleCellExperiment"), function(x,y){
-  results <- S4Vectors::metadata(x)$sctk$music[[y]]
-  if(is.null(results)) {
-    stop("No results from 'Music' are found. Please run `runMusic` first.") 
-  }    
-  return(results)
-})
-
-#' @rdname s4_methods
-setGeneric("getMusicResults<-", function(x,y, value) standardGeneric("getMusicResults<-"))
-
-#' @rdname s4_methods
-setReplaceMethod("getMusicResults", signature(x = "SingleCellExperiment",y = "character"), function(x,y, value) {
-  S4Vectors::metadata(x)$sctk$music[[y]] <- value
-  return(x)
-})
-
+#' 
 #' @export
 
 runMusic<-function(inSCE, 
@@ -316,5 +295,37 @@ runMusic<-function(inSCE,
   return(inSCE)
   }
 }
+
+
+
+#' @rdname runMusic 
+#' @aliases runMusic
+#' @export
+
+setGeneric("getMusicResults", signature = c("x","y"),
+           function(x,y) {standardGeneric("getMusicResults")}
+)
+
+#' @rdname runMusic 
+setClass("y", representation(name = "character"))
+
+#' @rdname runMusic 
+setMethod("getMusicResults", signature = c(x = "SingleCellExperiment"), function(x,y){
+  results <- S4Vectors::metadata(x)$sctk$music[[y]]
+  if(is.null(results)) {
+    stop("No results from 'Music' are found. Please run `runMusic` first.") 
+  }    
+  return(results)
+})
+
+
+#' @rdname runMusic 
+setGeneric("getMusicResults<-", function(x,y, value) standardGeneric("getMusicResults<-"))
+
+setReplaceMethod("getMusicResults", signature(x = "SingleCellExperiment",y = "character"), function(x,y, value) {
+  S4Vectors::metadata(x)$sctk$music[[y]] <- value
+  return(x)
+})
+
 
 

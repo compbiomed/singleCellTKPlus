@@ -19,11 +19,17 @@
 #' @param ctCov logical. If TRUE, use the covariance across cell types; #same as ctCov in MuSiC
 #' @param preClusterlist 	list of cell types. The list identify groups of similar cell types.
 #' @param verbose logical, default as TRUE.
-#' @param iter.max 	numeric, maximum iteration number. Default 1000
+#' @param iterMax 	numeric, maximum iteration number, same as iter.max in MuSiC. Default 1000
 #' @param nu  regulation parameter, take care of weight when taking reciprocal 1e-04,
 #' @param eps Threshold of convergence. Default 0.01,
 #' @param centered logic, subtract avg of Y and D. Default FALSE
 #' @param normalize logic, divide Y and D by their standard deviation. Default FALSE
+#' @param bulkData matrix of bulk RNASeq data
+#' @param nonZero logical, default as TRUE. If true, remove all gene with zero expression, same as non.zero.
+#' @param groups grouping labels, character, the colData of single cell data used as groups
+#' @param output_file name of the output file 
+#' @param DEmarkers list of gene names. The list include differential expressed genes within groups. List name must be the same as group.markers.
+#' @param output_dir name of output marker
 #' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
 #' @export
 #' @examples

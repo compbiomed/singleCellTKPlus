@@ -32,6 +32,8 @@ reportMusic(
 \arguments{
 \item{inSCE}{A SingleCellExperiment object.}
 
+\item{bulkData}{matrix of bulk RNASeq data}
+
 \item{analysisName}{Character. User-defined analysis name.
 This will be used as the slot name and results can be stored and retrived from SCE object using this name}
 
@@ -48,6 +50,10 @@ groups = NULL,}
 
 \item{preClusterlist}{list of cell types. The list identify groups of similar cell types.}
 
+\item{DEmarkers}{list of gene names. The list include differential expressed genes within groups. List name must be the same as group.markers.}
+
+\item{groups}{grouping labels, character, the colData of single cell data used as groups}
+
 \item{selectCt}{vector of cell types, default as NULL. If NULL, then use all cell types provided by single cell dataset; NULL, #same as select.ct}
 
 \item{cellSize}{data.frame of cell sizes.same as cell_size; data.frame of cell sizes. 1st column contains the names of cell types, 2nd column has the cell sizes per cell type. Default as NULL. If NULL, then estimate cell size from data;}
@@ -55,6 +61,8 @@ groups = NULL,}
 \item{ctCov}{logical. If TRUE, use the covariance across cell types; #same as ctCov in MuSiC}
 
 \item{verbose}{logical, default as TRUE.}
+
+\item{iterMax}{numeric, maximum iteration number, same as iter.max in MuSiC. Default 1000}
 
 \item{nu}{regulation parameter, take care of weight when taking reciprocal 1e-04,}
 
@@ -64,7 +72,11 @@ groups = NULL,}
 
 \item{normalize}{logic, divide Y and D by their standard deviation. Default FALSE}
 
-\item{iter.max}{numeric, maximum iteration number. Default 1000}
+\item{nonZero}{logical, default as TRUE. If true, remove all gene with zero expression, same as non.zero.}
+
+\item{output_file}{name of the output file}
+
+\item{output_dir}{name of output marker}
 }
 \value{
 SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
