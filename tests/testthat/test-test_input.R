@@ -34,7 +34,7 @@ singlecellplot<- plotMusicResults(inSCE, analysisType ="SingleCellClust", analys
 
 test_that(desc = "plotting test", {
   
-  expect_equal(class(estplot)[1], "Heatmap")
+  expect_equal(class(estplot)[1], "gg")
 })
   
 
