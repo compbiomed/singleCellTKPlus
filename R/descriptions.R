@@ -1,4 +1,8 @@
 #' @export
+#' @description prints music desc
+#' @name description_runMusic
+#' @title prints description of music wrapper parameters 
+
 
 description_runMusic <- function() {
   return(list(
@@ -11,7 +15,7 @@ description_runMusic <- function() {
     samples = "default is sampleID character,the colData of single cell dataset used as samples", 
     preClusterlist = "pre grouped cluster list" ,
     DEmarkers = "list of group marker",
-    groups = "roups passes the column name of higher-cluster in phenoData", 
+    groups = "groups passes the column name of higher-cluster in phenoData", 
     selectCt = "vector of cell types, default as NULL. If NULL, then use all cell types provided by single cell dataset", #same as select.ct
     cellSize = "data.frame of cell sizes. 1st column contains the names of cell types, 2nd column has the cell sizes per cell type. Default as NULL. If NULL, then estimate cell size from data", #same as cell_size 
     ctCov = "logical. If TRUE, use the covariance across cell types", #same as ctCov
