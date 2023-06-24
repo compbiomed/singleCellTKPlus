@@ -75,8 +75,8 @@ runMusic<-function(inSCE,
                    nonZero = TRUE # sane as non.zero
 ) {
   
-
-
+  
+  
   # Estimate cell type proportions 
   
   
@@ -122,7 +122,7 @@ runMusic<-function(inSCE,
   
   
   
-
+  
   .musicBase<- function(inSCE,
                         clusters,
                         samples, 
@@ -169,7 +169,7 @@ runMusic<-function(inSCE,
     mergeall<-append(preClusterlist,clusterExclude)
     names(mergeall)<-c(names(preClusterlist),clusterExclude)
     cluster_new<-data.frame(do.call(cbind,mergeall)) %>% gather() %>% unique() %>% dplyr::rename(!!clusters:= "value", !!groups:= "key")
-
+    
     # adding cluster labels to phenodata
     data %>% 
       data.frame() %>%
@@ -202,97 +202,97 @@ runMusic<-function(inSCE,
   #####################################################################
   
   if(length(inSCE) == 0 | length(bulkData) == 0){
-     print("please supply correct SCE object and bulkData object")
+    print("please supply correct SCE object and bulkData object")
     # break
   }
   
   else{
-  
-  
-  # Estimate cell type proportions
-  
-  if(analysisType == "EstCellProp"){
     
-    temp_result<- .musicProp(bulkData, 
-                             inSCE, 
-                             analysisType, 
-                             markers, 
-                             clusters, 
-                             samples, 
-                             selectCt, 
-                             cellSize,
-                             ctCov,
-                             iterMax,
-                             nu,
-                             eps,
-                             centered,
-                             normalize)
-    temp_result$analysisType = analysisType
-  }
-  
-  # Clustering of single cell data 
-  
-  else if (analysisType == "SingleCellClust"){
     
-    temp_result<- .musicBase(inSCE,
-                             clusters,
-                             samples, 
-                             markers,
-                             selectCt, 
-                             nonZero,
-                             cellSize,
-                             ctCov)
+    # Estimate cell type proportions
     
-    temp_result$analysisType = analysisType
-    
-  }
-  
-  # Bulk tissue type estimation
-  
-  else if(analysisType == "PreGroupedClustProp") {
-    
-    if(class(preClusterlist) == "list"){
+    if(analysisType == "EstCellProp"){
       
-      temp_result = .musicPropCluster(bulk.mtx = bulkData, 
-                                      inSCE = inSCE, 
-                                      DEmarkers = IEmarkers, 
-                                      clusters = clusters, 
-                                      groups = groups, 
-                                      samples = samples, 
-                                      preClusterlist = preClusterlist,
-                                      iterMax = iterMax,
-                                      nu = nu,
-                                      eps = eps,
-                                      centered = centered,
-                                      normalize = normalize)
+      temp_result<- .musicProp(bulkData, 
+                               inSCE, 
+                               analysisType, 
+                               markers, 
+                               clusters, 
+                               samples, 
+                               selectCt, 
+                               cellSize,
+                               ctCov,
+                               iterMax,
+                               nu,
+                               eps,
+                               centered,
+                               normalize)
+      temp_result$analysisType = analysisType
+    }
+    
+    # Clustering of single cell data 
+    
+    else if (analysisType == "SingleCellClust"){
+      
+      temp_result<- .musicBase(inSCE,
+                               clusters,
+                               samples, 
+                               markers,
+                               selectCt, 
+                               nonZero,
+                               cellSize,
+                               ctCov)
       
       temp_result$analysisType = analysisType
       
     }
     
+    # Bulk tissue type estimation
     
-    
-  }
-  
-  
-  temp_result[["params"]]<-c(as.list(environment()))
-  
-  
-
- if(length(inSCE@metadata$sctk$music)>0){
-        getMusicResults(x = inSCE, y = analysisName) <- temp_result
-        # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
+    else if(analysisType == "PreGroupedClustProp") {
+      
+      if(class(preClusterlist) == "list"){
+        
+        temp_result = .musicPropCluster(bulk.mtx = bulkData, 
+                                        inSCE = inSCE, 
+                                        DEmarkers = IEmarkers, 
+                                        clusters = clusters, 
+                                        groups = groups, 
+                                        samples = samples, 
+                                        preClusterlist = preClusterlist,
+                                        iterMax = iterMax,
+                                        nu = nu,
+                                        eps = eps,
+                                        centered = centered,
+                                        normalize = normalize)
+        
+        temp_result$analysisType = analysisType
+        
+      }
+      
+      
+      
     }
-  else{
-    new_list<-c()
-    metadata(inSCE)$sctk$music<-new_list
-   # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
-    getMusicResults(x = inSCE, y = analysisName)<-temp_result
-  }
-  
-
-  
-  return(inSCE)
+    
+    
+    temp_result[["params"]]<-c(as.list(environment()))
+    
+    
+    
+    if(length(inSCE@metadata$sctk$music)>0){
+      getMusicResults(x = inSCE, y = analysisName) <- temp_result
+      # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
+    }
+    else{
+      new_list<-c()
+      metadata(inSCE)$sctk$music<-new_list
+      # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
+      getMusicResults(x = inSCE, y = analysisName)<-temp_result
+    }
+    
+    
+    
+    return(inSCE)
   }
 }
 
