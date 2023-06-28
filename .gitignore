@@ -41,3 +41,9 @@ vignettes/*.pdf
 # R Environment Variables
 .Renviron
 .Rproj.user
+
+# proj env
+
+singleCellTK.Rproj
+
+
