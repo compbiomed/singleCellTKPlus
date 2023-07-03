@@ -3,6 +3,18 @@
 \name{plotMusicResults}
 \alias{plotMusicResults}
 \title{Plotting function of runMusic.R}
+\usage{
+plotMusicResults(
+  inSCE,
+  analysisType = c("EstCellProp", "PreGroupedClustProp", "SingleCellClust"),
+  heatmapTitle = NULL,
+  analysisName = NULL,
+  useAssay = NULL,
+  colDataName = NULL,
+  rowDataName = NULL,
+  scale = FALSE
+)
+}
 \arguments{
 \item{inSCE}{A \link[SingleCellExperiment]{SingleCellExperiment} object.}
 
@@ -13,6 +25,16 @@ Available options are  "EstCellProp","PreGroupedClustProp","SingleCellClust"}
 
 \item{analysisName}{Character. User-defined analysis name.
 This will be used as the slot name and results can be stored and retrived from SCE object using this name}
+
+\item{useAssay}{Choose the assay to be plotted with the heatmap.}
+
+\item{colDataName}{The column name(s) in \code{colData} that need
+to be added to the annotation. See plotSCEHeatmap from SingleCellTK for more info}
+
+\item{rowDataName}{The column name(s) in \code{rowData} that need
+to be added to the annotation}
+
+\item{scale}{scale input assay if set to TRUE. Default is FALSE}
 }
 \value{
 SingleCellExperiment object containing the outputs of the
@@ -21,4 +43,7 @@ of \code{inSCE}.
 }
 \description{
 A wrapper that plots heatmap and cluster plots for results from runMusic.R
+}
+\details{
+plotMusicResults function
 }

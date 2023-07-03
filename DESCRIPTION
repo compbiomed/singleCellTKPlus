@@ -23,8 +23,9 @@ Description: "The Single Cell Toolkit (SCTK) in the singleCellTK package provide
 License: MIT + file LICENSE
 Encoding: UTF-8
 Roxygen: list(markdown = TRUE)
-RoxygenNote: 7.2.1
+RoxygenNote: 7.2.3
 Remotes: xuranw/MuSiC
+LazyData: FALSE
 Imports: 
     methods,
     rlang,

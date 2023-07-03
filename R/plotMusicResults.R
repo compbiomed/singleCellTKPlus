@@ -1,4 +1,4 @@
-#'# plotMusicResults function
+#' plotMusicResults function
 #'
 #' @title Plotting function of runMusic.R
 #' @description A wrapper that plots heatmap and cluster plots for results from runMusic.R
@@ -12,19 +12,13 @@
 #' to be added to the annotation. See plotSCEHeatmap from SingleCellTK for more info
 #' @param rowDataName The column name(s) in \code{rowData} that need
 #' to be added to the annotation
+#' @param useAssay Choose the assay to be plotted with the heatmap. 
+#' @param scale scale input assay if set to TRUE. Default is FALSE
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
 #' 
 #' @export
-
-
-require(singleCellTK)
-require(circlize)
-require(dplyr)
-require(S4Vectors)
-require(SingleCellExperiment)
-require(ggplot2)
 
 
 plotMusicResults<- function(inSCE, 
