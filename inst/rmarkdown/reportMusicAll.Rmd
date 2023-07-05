@@ -47,20 +47,20 @@ library(S4Vectors)
 
 
 # run Music wrapper
-```{r, echo=FALSE, warning=FALSE, results='asis', message=FALSE}
+```{r, echo=FALSE, results='asis'}
 headingNorm <- "##"
 repMusicRun <- knitr::knit_child('reportMusicRun.RMD', quiet = TRUE, envir = environment())
 ```
 
 # Plot music results
 
-```{r, echo=FALSE,results='asis',message=FALSE, warning=FALSE}
+```{r, echo=FALSE,results='asis'}
 headingFS <- "##"
 repPlots <- knitr::knit_child('reportMusicResults.RMD', quiet = TRUE, envir = environment())
 ```
 
 
-```{r, echo=FALSE, results='asis', warning=FALSE, message=FALSE}
+```{r, echo=FALSE, results='asis'}
 cat(repMusicRun, sep = '\n')
 cat(repPlots, sep = '\n')
 ```
