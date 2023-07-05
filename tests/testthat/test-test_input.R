@@ -1,8 +1,8 @@
 library("singleCellTKPlus")
 context("testing example data")
 
-data()
-data("musicBulkexample")
+
+data(musicBulkexample)
 data(musicSCEexample)
 
 inSCE <- runMusic(inSCE = musicSCEexample,
