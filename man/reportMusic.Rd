@@ -89,7 +89,7 @@ SingleCellExperiment object
 \dontrun{
 data("musicSCEexample")
 data("musicBulkexample")
-music_sce <- reportMusic(inSCE = musicSCEexample, 
+music_sce <- reportMusicAll(inSCE = musicSCEexample, 
 bulkData = musicBulkexample,
 analysisName = "test1",
 analysisType = "EstCellProp", 
@@ -112,7 +112,7 @@ nonZero = TRUE)
 output_file = ,
 }
 \dontrun{
-reportMusicResults(inSCE= music_sce,
+reportMusicAll(inSCE= music_sce,
                   analysisName = "test2",
                   analysisType = "EstCellProp", 
                   heatmapTitle = "test")

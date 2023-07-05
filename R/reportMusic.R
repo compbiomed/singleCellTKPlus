@@ -1,6 +1,5 @@
 
 # Report render functions for music
-
 #' @title Deconvolution of RNASeq data using single cell data
 #' @description A wrapper that performs deconvolution and clustering using MuSiC tool and 
 #' SingleCellExperiment object
@@ -37,7 +36,7 @@
 #' \dontrun{
 #' data("musicSCEexample")
 #' data("musicBulkexample")
-#' music_sce <- reportMusic(inSCE = musicSCEexample, 
+#' music_sce <- reportMusicAll(inSCE = musicSCEexample, 
 #' bulkData = musicBulkexample,
 #' analysisName = "test1",
 #' analysisType = "EstCellProp", 
@@ -61,7 +60,7 @@
 # ' output_dir = NULL)
 #' }
 #' \dontrun{
-#' reportMusicResults(inSCE= music_sce,
+#' reportMusicAll(inSCE= music_sce,
 #'                   analysisName = "test2",
 #'                   analysisType = "EstCellProp", 
 #'                   heatmapTitle = "test")
@@ -127,7 +126,8 @@ reportMusic <- function(inSCE = inSCE,
   
 }
 
-
+#' reportMusicResults
+#' @export
 
 reportMusicResults<- function(inSCE,
                               analysisName,
@@ -151,6 +151,9 @@ reportMusicResults<- function(inSCE,
   
   
 }
+
+#' reportMusicAll
+#' @export
 
 
 reportMusicAll<-function(inSCE = inSCE, 
