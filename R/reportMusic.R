@@ -31,6 +31,7 @@
 #' @param DEmarkers list of gene names. The list include differential expressed genes within groups. List name must be the same as group.markers.
 #' @param output_dir name of output marker
 #' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
+#' @export reportMusicAll
 #' @export
 #' @examples
 #' \dontrun{

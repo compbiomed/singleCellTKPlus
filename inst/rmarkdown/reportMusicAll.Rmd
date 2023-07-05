@@ -31,9 +31,6 @@ params:
   nonZero: nonZero
 ---
 
-```{r global options, include = FALSE}
-knitr::opts_chunk$set(warning=FALSE, message=FALSE)
-```
 
 
 ```{r}
@@ -47,7 +44,7 @@ library(S4Vectors)
 
 
 # run Music wrapper
-```{r, echo=FALSE, results='asis'}
+```{r}
 headingNorm <- "##"
 repMusicRun <- knitr::knit_child('reportMusicRun.RMD', quiet = TRUE, envir = environment())
 ```
@@ -55,14 +52,14 @@ repMusicRun <- knitr::knit_child('reportMusicRun.RMD', quiet = TRUE, envir = env
 # Plot music results
 
 ```{r, echo=FALSE,results='asis'}
-headingFS <- "##"
 repPlots <- knitr::knit_child('reportMusicResults.RMD', quiet = TRUE, envir = environment())
+cat(repPlots, sep = '\n')
 ```
 
 
-```{r, echo=FALSE, results='asis'}
+```{r}
 cat(repMusicRun, sep = '\n')
-cat(repPlots, sep = '\n')
+print(repPlots, sep = '\n')
 ```
 
 
