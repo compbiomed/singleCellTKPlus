@@ -1,65 +1,56 @@
 # runMusic function
-
+#'
 #' @title Deconvolution of RNASeq data using single cell data
 #' @description A wrapper that performs deconvolution and clustering using MuSiC tool and 
 #' SingleCellExperiment object
-#' @param inSCE A SingleCellExperiment object.
+#' @param inSCE A \linkS4class{SingleCellExperiment} object with singlecell RNASeq data.
+#' @param bulkData bulk RNASeq matrix object
 #' @param analysisType Character. Specify which function to run 
 #'  Available options are  "EstCellProp","PreGroupedClustProp","SingleCellClust"
 #' @param analysisName Character. User-defined analysis name. 
 #' This will be used as the slot name and results can be stored and retrived from SCE object using this name
-#' @param markers List. list of gene names. Same as group.markers option from MuSiC package. The list include differential expressed genes within groups. 
+#' @param DEmarkers List. list of gene names. Same as group.markers option from MuSiC package. The list include differential expressed genes within groups. 
 #' List name must be the same as `clusters`. Default is NULL
+#' @param markers vector or list of gene names, default as NULL. If NULL, use all genes that provided by both bulk and single cell dataset.
 #' @param clusters character, the colData of single cell dataset used as clusters; Default is "cellType"
-#' @param samples . Default is sampleID.
-#' groups = NULL, 
+#' @param samples Default is sampleID.
+#' @param groups NULL groups passes the column name of higher-cluster in phenoData.
 #' @param selectCt vector of cell types, default as NULL. If NULL, then use all cell types provided by single cell dataset; NULL, #same as select.ct
 #' @param cellSize 	data.frame of cell sizes.same as cell_size; data.frame of cell sizes. 1st column contains the names of cell types, 2nd column has the cell sizes per cell type. Default as NULL. If NULL, then estimate cell size from data;
 #' @param ctCov logical. If TRUE, use the covariance across cell types; #same as ctCov in MuSiC
 #' @param preClusterlist 	list of cell types. The list identify groups of similar cell types.
 #' @param verbose logical, default as TRUE.
-#' @param iter.max 	numeric, maximum iteration number. Default 1000
+#' @param iterMax 	numeric, maximum iteration number, same as iter.max. Default 1000
 #' @param nu  regulation parameter, take care of weight when taking reciprocal 1e-04,
+#' @param nonZero same as non.zero, default is TRUE,
 #' @param eps Threshold of convergence. Default 0.01,
-#' @param centered logic, subtract avg of Y and D. Default FALSE
-#' @param normalize logic, divide Y and D by their standard deviation. Default FALSE
-#' @return SingleCellExperiment object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
-#' @export
+#' @param centered logic, subtract avg of Y and D. Default FALSE,
+#' @param normalize logic, divide Y and D by their standard deviation. Default FALSE,
+#' @param x A \linkS4class{SingleCellExperiment} object with singlecell RNASeq data,
+#' @param y analysisName,
+#' @param value A \linkS4class{SingleCellExperiment} object with results stored in metadata
+#' @importFrom tibble rownames_to_column
+#' @importFrom tibble column_to_rownames
+#' @importFrom stats dist
+#' @importFrom S4Vectors metadata
+#' @importFrom MuSiC music_prop
+#' @importFrom MuSiC music_prop.cluster
+#' @importFrom tidyr gather
+#' @importFrom SummarizedExperiment colData
+#' @importFrom dplyr left_join
+#' @importFrom S4Vectors DataFrame
+#' @importFrom stats hclust
+#' @return \linkS4class{SingleCellExperiment} object containing the outputs of the specified algorithms in the \link{colData} of \code{inSCE}.
 #' @examples
-#' data(scExample, package = "singleCellTK")
-#' Add bulk data here
 #' \dontrun{
-#' sce <- runMusic(sce,bulkdata, analysisType = "EstCellProp",analysisName = "test")
+#' data("musicBulkexample")
+#' data("musicSCEexample")
+#' sce <- runMusic(musicSCEexample,musicBulkexample, analysisType = "EstCellProp",analysisName = "test",
+#' analysisType = "EstCellProp", markers = NULL, clusters = "cellType",samples = "sampleID", preClusterlist = NULL,
+#' DEmarkers = NULL,groups = NULL,selectCt = NULL, cellSize = NULL, ctCov = FALSE, verbose = TRUE,iterMax = 1000, 
+#' nu = 1e-04,eps = 0.01,centered = FALSE,normalize = FALSE, nonZero = TRUE)
 #' }
-#'
-
-
-#' @rdname s4_methods
-setGeneric("getMusicResults", signature = c("x","y"),
-           function(x,y) {standardGeneric("getMusicResults")}
-)
-
-setClass("y", representation(name = "character"))
-
-
-#' @rdname s4_methods
-setMethod("getMusicResults", signature = c(x = "SingleCellExperiment"), function(x,y){
-  results <- S4Vectors::metadata(x)$sctk$music[[y]]
-  if(is.null(results)) {
-    stop("No results from 'Music' are found. Please run `runMusic` first.") 
-  }    
-  return(results)
-})
-
-#' @rdname s4_methods
-setGeneric("getMusicResults<-", function(x,y, value) standardGeneric("getMusicResults<-"))
-
-#' @rdname s4_methods
-setReplaceMethod("getMusicResults", signature(x = "SingleCellExperiment",y = "character"), function(x,y, value) {
-  S4Vectors::metadata(x)$sctk$music[[y]] <- value
-  return(x)
-})
-
+#' 
 #' @export
 
 runMusic<-function(inSCE, 
@@ -84,8 +75,8 @@ runMusic<-function(inSCE,
                    nonZero = TRUE # sane as non.zero
 ) {
   
-
-
+  
+  
   # Estimate cell type proportions 
   
   
@@ -131,7 +122,7 @@ runMusic<-function(inSCE,
   
   
   
-
+  
   .musicBase<- function(inSCE,
                         clusters,
                         samples, 
@@ -178,7 +169,7 @@ runMusic<-function(inSCE,
     mergeall<-append(preClusterlist,clusterExclude)
     names(mergeall)<-c(names(preClusterlist),clusterExclude)
     cluster_new<-data.frame(do.call(cbind,mergeall)) %>% gather() %>% unique() %>% dplyr::rename(!!clusters:= "value", !!groups:= "key")
-
+    
     # adding cluster labels to phenodata
     data %>% 
       data.frame() %>%
@@ -210,91 +201,131 @@ runMusic<-function(inSCE,
   ## Run the tool
   #####################################################################
   
-  # Estimate cell type proportions
-  
-  if(analysisType == "EstCellProp"){
-    
-    temp_result<- .musicProp(bulkData, 
-                             inSCE, 
-                             analysisType, 
-                             markers, 
-                             clusters, 
-                             samples, 
-                             selectCt, 
-                             cellSize,
-                             ctCov,
-                             iterMax,
-                             nu,
-                             eps,
-                             centered,
-                             normalize)
-    temp_result$analysisType = analysisType
+  if(length(inSCE) == 0 | length(bulkData) == 0){
+    print("please supply correct SCE object and bulkData object")
+    # break
   }
   
-  # Clustering of single cell data 
-  
-  else if (analysisType == "SingleCellClust"){
+  else{
     
-    temp_result<- .musicBase(inSCE,
-                             clusters,
-                             samples, 
-                             markers,
-                             selectCt, 
-                             nonZero,
-                             cellSize,
-                             ctCov)
     
-    temp_result$analysisType = analysisType
+    # Estimate cell type proportions
     
-  }
-  
-  # Bulk tissue type estimation
-  
-  else if(analysisType == "PreGroupedClustProp") {
-    
-    if(class(preClusterlist) == "list"){
+    if(analysisType == "EstCellProp"){
       
-      temp_result = .musicPropCluster(bulk.mtx = bulkData, 
-                                      inSCE = inSCE, 
-                                      DEmarkers = IEmarkers, 
-                                      clusters = clusters, 
-                                      groups = groups, 
-                                      samples = samples, 
-                                      preClusterlist = preClusterlist,
-                                      iterMax = iterMax,
-                                      nu = nu,
-                                      eps = eps,
-                                      centered = centered,
-                                      normalize = normalize)
+      temp_result<- .musicProp(bulkData, 
+                               inSCE, 
+                               analysisType, 
+                               markers, 
+                               clusters, 
+                               samples, 
+                               selectCt, 
+                               cellSize,
+                               ctCov,
+                               iterMax,
+                               nu,
+                               eps,
+                               centered,
+                               normalize)
+      temp_result$analysisType = analysisType
+    }
+    
+    # Clustering of single cell data 
+    
+    else if (analysisType == "SingleCellClust"){
+      
+      temp_result<- .musicBase(inSCE,
+                               clusters,
+                               samples, 
+                               markers,
+                               selectCt, 
+                               nonZero,
+                               cellSize,
+                               ctCov)
       
       temp_result$analysisType = analysisType
       
     }
     
+    # Bulk tissue type estimation
     
-    
-  }
-  
-  
-  temp_result[["params"]]<-c(as.list(environment()))
-  
-  
-
- if(length(inSCE@metadata$sctk$music)>0){
-        getMusicResults(x = inSCE, y = analysisName) <- temp_result
-        # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
+    else if(analysisType == "PreGroupedClustProp") {
+      
+      if(class(preClusterlist) == "list"){
+        
+        temp_result = .musicPropCluster(bulk.mtx = bulkData, 
+                                        inSCE = inSCE, 
+                                        DEmarkers = IEmarkers, 
+                                        clusters = clusters, 
+                                        groups = groups, 
+                                        samples = samples, 
+                                        preClusterlist = preClusterlist,
+                                        iterMax = iterMax,
+                                        nu = nu,
+                                        eps = eps,
+                                        centered = centered,
+                                        normalize = normalize)
+        
+        temp_result$analysisType = analysisType
+        
+      }
+      
+      
+      
     }
-  else{
-    new_list<-c()
-    metadata(inSCE)$sctk$music<-new_list
-   # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
-    getMusicResults(x = inSCE, y = analysisName)<-temp_result
+    
+    
+    temp_result[["params"]]<-c(as.list(environment()))
+    
+    
+    
+    if(length(inSCE@metadata$sctk$music)>0){
+      getMusicResults(x = inSCE, y = analysisName) <- temp_result
+      # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
+    }
+    else{
+      new_list<-c()
+      metadata(inSCE)$sctk$music<-new_list
+      # metadata(inSCE)$sctk$music[[analysisName]]<-temp_result
+      getMusicResults(x = inSCE, y = analysisName)<-temp_result
+    }
+    
+    
+    
+    return(inSCE)
   }
-  
-
-  
-  return(inSCE)
-  
 }
+
+
+
+#' @rdname runMusic 
+#' @aliases runMusic
+#' @export
+
+setGeneric("getMusicResults", signature = c("x","y"),
+           function(x,y) {standardGeneric("getMusicResults")}
+)
+
+#' @rdname runMusic 
+setClass("y", representation(name = "character"))
+
+#' @rdname runMusic 
+setMethod("getMusicResults", signature = c(x = "SingleCellExperiment"), function(x,y){
+  results <- S4Vectors::metadata(x)$sctk$music[[y]]
+  if(is.null(results)) {
+    stop("No results from 'Music' are found. Please run `runMusic` first.") 
+  }    
+  return(results)
+})
+
+
+#' @rdname runMusic 
+setGeneric("getMusicResults<-", function(x,y, value) standardGeneric("getMusicResults<-"))
+
+setReplaceMethod("getMusicResults", signature(x = "SingleCellExperiment",y = "character"), function(x,y, value) {
+  S4Vectors::metadata(x)$sctk$music[[y]] <- value
+  return(x)
+})
+
 
 

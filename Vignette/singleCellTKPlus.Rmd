@@ -1,0 +1,60 @@
+---
+title: "singleCellTKPlus"
+author: "Amulya Shastry, Joshua D.Campbell"
+date: "`r Sys.Date()`"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{singleCellTKPlus}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r setup, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+require(singleCellTKPlus)
+```
+
+
+
+## Loading the datasets
+
+SingleCellTKPlus provides a wrapper for MuSiC deconvolution tool. This wrapper takes a single cell RNASeq dataset to deconvolute the bulk RNASeq dataset. There are options to use marker genes and if no marker genes are added, then this tool will use all genes in the dataset. Here we demonstrate the deconvultion of mouse pancreatic dataset provided in the original MuSiC tool documentation. 
+
+
+
+```{r}
+data("musicBulkexample")
+data("musicSCEexample")
+```
+
+
+## Running the analysis
+To run a simple estimation of cell type proportions, run the following example by providing the dataset we loaded in the earlier step. This function will return SCE object with results in the metadata slot.
+
+
+```{r}
+sce2<-runMusic(inSCE = musicSCEexample, bulkData = musicBulkexample, analysisType ="EstCellProp", analysisName = "testEstCellProp")
+```
+
+
+## Accessing the results
+Results are stored in the metadata slots with the type and name of the analysis 
+
+
+```{r}
+metadata(sce2)[["sctk"]][["music"]][["testEstCellProp"]][["Est.prop.weighted"]]
+```
+
+
+## Plotting the results
+
+The figure sizes have been customised so that you can easily put two images side-by-side. 
+
+```{r, fig.show='hold'}
+plotMusicResults(sce2, analysisType ="EstCellProp", analysisName = "testEstCellProp")
+```
+
+

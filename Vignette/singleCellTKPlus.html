@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+
+<html>
+
+<head>
+
+<meta charset="utf-8" />
+<meta name="generator" content="pandoc" />
+<meta http-equiv="X-UA-Compatible" content="IE=EDGE" />
+
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+
+<meta name="author" content="Amulya Shastry, Joshua D.Campbell" />
+
+<meta name="date" content="2022-12-29" />
+
+<title>singleCellTKPlus</title>
+
+<script>// Pandoc 2.9 adds attributes on both header and div. We remove the former (to
+// be compatible with the behavior of Pandoc < 2.8).
+document.addEventListener('DOMContentLoaded', function(e) {
+  var hs = document.querySelectorAll("div.section[class*='level'] > :first-child");
+  var i, h, a;
+  for (i = 0; i < hs.length; i++) {
+    h = hs[i];
+    if (!/^h[1-6]$/i.test(h.tagName)) continue;  // it should be a header h1-h6
+    a = h.attributes;
+    while (a.length > 0) h.removeAttribute(a[0].name);
+  }
+});
+</script>
+
+<style type="text/css">
+code{white-space: pre-wrap;}
+span.smallcaps{font-variant: small-caps;}
+span.underline{text-decoration: underline;}
+div.column{display: inline-block; vertical-align: top; width: 50%;}
+div.hanging-indent{margin-left: 1.5em; text-indent: -1.5em;}
+ul.task-list{list-style: none;}
+</style>
+
+
+
+<style type="text/css">
+code {
+white-space: pre;
+}
+.sourceCode {
+overflow: visible;
+}
+</style>
+<style type="text/css" data-origin="pandoc">
+pre > code.sourceCode { white-space: pre; position: relative; }
+pre > code.sourceCode > span { display: inline-block; line-height: 1.25; }
+pre > code.sourceCode > span:empty { height: 1.2em; }
+.sourceCode { overflow: visible; }
+code.sourceCode > span { color: inherit; text-decoration: inherit; }
+div.sourceCode { margin: 1em 0; }
+pre.sourceCode { margin: 0; }
+@media screen {
+div.sourceCode { overflow: auto; }
+}
+@media print {
+pre > code.sourceCode { white-space: pre-wrap; }
+pre > code.sourceCode > span { text-indent: -5em; padding-left: 5em; }
+}
+pre.numberSource code
+{ counter-reset: source-line 0; }
+pre.numberSource code > span
+{ position: relative; left: -4em; counter-increment: source-line; }
+pre.numberSource code > span > a:first-child::before
+{ content: counter(source-line);
+position: relative; left: -1em; text-align: right; vertical-align: baseline;
+border: none; display: inline-block;
+-webkit-touch-callout: none; -webkit-user-select: none;
+-khtml-user-select: none; -moz-user-select: none;
+-ms-user-select: none; user-select: none;
+padding: 0 4px; width: 4em;
+color: #aaaaaa;
+}
+pre.numberSource { margin-left: 3em; border-left: 1px solid #aaaaaa; padding-left: 4px; }
+div.sourceCode
+{ }
+@media screen {
+pre > code.sourceCode > span > a:first-child::before { text-decoration: underline; }
+}
+code span.al { color: #ff0000; font-weight: bold; } 
+code span.an { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.at { color: #7d9029; } 
+code span.bn { color: #40a070; } 
+code span.bu { color: #008000; } 
+code span.cf { color: #007020; font-weight: bold; } 
+code span.ch { color: #4070a0; } 
+code span.cn { color: #880000; } 
+code span.co { color: #60a0b0; font-style: italic; } 
+code span.cv { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.do { color: #ba2121; font-style: italic; } 
+code span.dt { color: #902000; } 
+code span.dv { color: #40a070; } 
+code span.er { color: #ff0000; font-weight: bold; } 
+code span.ex { } 
+code span.fl { color: #40a070; } 
+code span.fu { color: #06287e; } 
+code span.im { color: #008000; font-weight: bold; } 
+code span.in { color: #60a0b0; font-weight: bold; font-style: italic; } 
+code span.kw { color: #007020; font-weight: bold; } 
+code span.op { color: #666666; } 
+code span.ot { color: #007020; } 
+code span.pp { color: #bc7a00; } 
+code span.sc { color: #4070a0; } 
+code span.ss { color: #bb6688; } 
+code span.st { color: #4070a0; } 
+code span.va { color: #19177c; } 
+code span.vs { color: #4070a0; } 
+code span.wa { color: #60a0b0; font-weight: bold; font-style: italic; } 
+</style>
+<script>
+// apply pandoc div.sourceCode style to pre.sourceCode instead
+(function() {
+  var sheets = document.styleSheets;
+  for (var i = 0; i < sheets.length; i++) {
+    if (sheets[i].ownerNode.dataset["origin"] !== "pandoc") continue;
+    try { var rules = sheets[i].cssRules; } catch (e) { continue; }
+    var j = 0;
+    while (j < rules.length) {
+      var rule = rules[j];
+      // check if there is a div.sourceCode rule
+      if (rule.type !== rule.STYLE_RULE || rule.selectorText !== "div.sourceCode") {
+        j++;
+        continue;
+      }
+      var style = rule.style.cssText;
+      // check if color or background-color is set
+      if (rule.style.color === '' && rule.style.backgroundColor === '') {
+        j++;
+        continue;
+      }
+      // replace div.sourceCode by a pre.sourceCode rule
+      sheets[i].deleteRule(j);
+      sheets[i].insertRule('pre.sourceCode{' + style + '}', j);
+    }
+  }
+})();
+</script>
+
+
+
+
+<style type="text/css">body {
+background-color: #fff;
+margin: 1em auto;
+max-width: 700px;
+overflow: visible;
+padding-left: 2em;
+padding-right: 2em;
+font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
+font-size: 14px;
+line-height: 1.35;
+}
+#TOC {
+clear: both;
+margin: 0 0 10px 10px;
+padding: 4px;
+width: 400px;
+border: 1px solid #CCCCCC;
+border-radius: 5px;
+background-color: #f6f6f6;
+font-size: 13px;
+line-height: 1.3;
+}
+#TOC .toctitle {
+font-weight: bold;
+font-size: 15px;
+margin-left: 5px;
+}
+#TOC ul {
+padding-left: 40px;
+margin-left: -1.5em;
+margin-top: 5px;
+margin-bottom: 5px;
+}
+#TOC ul ul {
+margin-left: -2em;
+}
+#TOC li {
+line-height: 16px;
+}
+table {
+margin: 1em auto;
+border-width: 1px;
+border-color: #DDDDDD;
+border-style: outset;
+border-collapse: collapse;
+}
+table th {
+border-width: 2px;
+padding: 5px;
+border-style: inset;
+}
+table td {
+border-width: 1px;
+border-style: inset;
+line-height: 18px;
+padding: 5px 5px;
+}
+table, table th, table td {
+border-left-style: none;
+border-right-style: none;
+}
+table thead, table tr.even {
+background-color: #f7f7f7;
+}
+p {
+margin: 0.5em 0;
+}
+blockquote {
+background-color: #f6f6f6;
+padding: 0.25em 0.75em;
+}
+hr {
+border-style: solid;
+border: none;
+border-top: 1px solid #777;
+margin: 28px 0;
+}
+dl {
+margin-left: 0;
+}
+dl dd {
+margin-bottom: 13px;
+margin-left: 13px;
+}
+dl dt {
+font-weight: bold;
+}
+ul {
+margin-top: 0;
+}
+ul li {
+list-style: circle outside;
+}
+ul ul {
+margin-bottom: 0;
+}
+pre, code {
+background-color: #f7f7f7;
+border-radius: 3px;
+color: #333;
+white-space: pre-wrap; 
+}
+pre {
+border-radius: 3px;
+margin: 5px 0px 10px 0px;
+padding: 10px;
+}
+pre:not([class]) {
+background-color: #f7f7f7;
+}
+code {
+font-family: Consolas, Monaco, 'Courier New', monospace;
+font-size: 85%;
+}
+p > code, li > code {
+padding: 2px 0px;
+}
+div.figure {
+text-align: center;
+}
+img {
+background-color: #FFFFFF;
+padding: 2px;
+border: 1px solid #DDDDDD;
+border-radius: 3px;
+border: 1px solid #CCCCCC;
+margin: 0 5px;
+}
+h1 {
+margin-top: 0;
+font-size: 35px;
+line-height: 40px;
+}
+h2 {
+border-bottom: 4px solid #f7f7f7;
+padding-top: 10px;
+padding-bottom: 2px;
+font-size: 145%;
+}
+h3 {
+border-bottom: 2px solid #f7f7f7;
+padding-top: 10px;
+font-size: 120%;
+}
+h4 {
+border-bottom: 1px solid #f7f7f7;
+margin-left: 8px;
+font-size: 105%;
+}
+h5, h6 {
+border-bottom: 1px solid #ccc;
+font-size: 105%;
+}
+a {
+color: #0033dd;
+text-decoration: none;
+}
+a:hover {
+color: #6666ff; }
+a:visited {
+color: #800080; }
+a:visited:hover {
+color: #BB00BB; }
+a[href^="http:"] {
+text-decoration: underline; }
+a[href^="https:"] {
+text-decoration: underline; }
+
+code > span.kw { color: #555; font-weight: bold; } 
+code > span.dt { color: #902000; } 
+code > span.dv { color: #40a070; } 
+code > span.bn { color: #d14; } 
+code > span.fl { color: #d14; } 
+code > span.ch { color: #d14; } 
+code > span.st { color: #d14; } 
+code > span.co { color: #888888; font-style: italic; } 
+code > span.ot { color: #007020; } 
+code > span.al { color: #ff0000; font-weight: bold; } 
+code > span.fu { color: #900; font-weight: bold; } 
+code > span.er { color: #a61717; background-color: #e3d2d2; } 
+</style>
+
+
+
+
+</head>
+
+<body>
+
+
+
+
+<h1 class="title toc-ignore">singleCellTKPlus</h1>
+<h4 class="author">Amulya Shastry, Joshua D.Campbell</h4>
+<h4 class="date">2022-12-29</h4>
+
+
+
+<div id="loading-the-datasets" class="section level2">
+<h2>Loading the datasets</h2>
+<p>SingleCellTKPlus provides a wrapper for MuSiC deconvolution tool.
+This wrapper takes a single cell RNASeq dataset to deconvolute the bulk
+RNASeq dataset. There are options to use marker genes and if no marker
+genes are added, then this tool will use all genes in the dataset. Here
+we demonstrate the deconvultion of mouse pancreatic dataset provided in
+the original MuSiC tool documentation.</p>
+<div class="sourceCode" id="cb1"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb1-1"><a href="#cb1-1" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;musicBulkexample&quot;</span>)</span>
+<span id="cb1-2"><a href="#cb1-2" aria-hidden="true" tabindex="-1"></a><span class="fu">data</span>(<span class="st">&quot;musicSCEexample&quot;</span>)</span></code></pre></div>
+</div>
+<div id="running-the-analysis" class="section level2">
+<h2>Running the analysis</h2>
+<p>To run a simple estimation of cell type proportions, run the
+following example by providing the dataset we loaded in the earlier
+step. This function will return SCE object with results in the metadata
+slot.</p>
+<div class="sourceCode" id="cb2"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb2-1"><a href="#cb2-1" aria-hidden="true" tabindex="-1"></a>sce2<span class="ot">&lt;-</span><span class="fu">runMusic</span>(<span class="at">inSCE =</span> musicSCEexample, <span class="at">bulkData =</span> musicBulkexample, <span class="at">analysisType =</span><span class="st">&quot;EstCellProp&quot;</span>, <span class="at">analysisName =</span> <span class="st">&quot;testEstCellProp&quot;</span>)</span>
+<span id="cb2-2"><a href="#cb2-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating Relative Abudance Matrix...</span></span>
+<span id="cb2-3"><a href="#cb2-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating Variance Matrix...</span></span>
+<span id="cb2-4"><a href="#cb2-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Creating Library Size Matrix...</span></span>
+<span id="cb2-5"><a href="#cb2-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Used 389 common genes...</span></span>
+<span id="cb2-6"><a href="#cb2-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Used 11 cell types in deconvolution...</span></span>
+<span id="cb2-7"><a href="#cb2-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub1 has common genes 358 ...</span></span>
+<span id="cb2-8"><a href="#cb2-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub2 has common genes 359 ...</span></span>
+<span id="cb2-9"><a href="#cb2-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub3 has common genes 366 ...</span></span>
+<span id="cb2-10"><a href="#cb2-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub4 has common genes 369 ...</span></span>
+<span id="cb2-11"><a href="#cb2-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub5 has common genes 356 ...</span></span>
+<span id="cb2-12"><a href="#cb2-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub6 has common genes 353 ...</span></span>
+<span id="cb2-13"><a href="#cb2-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub7 has common genes 362 ...</span></span>
+<span id="cb2-14"><a href="#cb2-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub8 has common genes 367 ...</span></span>
+<span id="cb2-15"><a href="#cb2-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub9 has common genes 361 ...</span></span>
+<span id="cb2-16"><a href="#cb2-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub10 has common genes 338 ...</span></span>
+<span id="cb2-17"><a href="#cb2-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub11 has common genes 366 ...</span></span>
+<span id="cb2-18"><a href="#cb2-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub12 has common genes 366 ...</span></span>
+<span id="cb2-19"><a href="#cb2-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub13 has common genes 366 ...</span></span>
+<span id="cb2-20"><a href="#cb2-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub14 has common genes 359 ...</span></span>
+<span id="cb2-21"><a href="#cb2-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub15 has common genes 355 ...</span></span>
+<span id="cb2-22"><a href="#cb2-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub16 has common genes 368 ...</span></span>
+<span id="cb2-23"><a href="#cb2-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub17 has common genes 358 ...</span></span>
+<span id="cb2-24"><a href="#cb2-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub18 has common genes 374 ...</span></span>
+<span id="cb2-25"><a href="#cb2-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub19 has common genes 365 ...</span></span>
+<span id="cb2-26"><a href="#cb2-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub20 has common genes 368 ...</span></span>
+<span id="cb2-27"><a href="#cb2-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub21 has common genes 358 ...</span></span>
+<span id="cb2-28"><a href="#cb2-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub22 has common genes 368 ...</span></span>
+<span id="cb2-29"><a href="#cb2-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub23 has common genes 375 ...</span></span>
+<span id="cb2-30"><a href="#cb2-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub24 has common genes 369 ...</span></span>
+<span id="cb2-31"><a href="#cb2-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub25 has common genes 367 ...</span></span>
+<span id="cb2-32"><a href="#cb2-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub26 has common genes 346 ...</span></span>
+<span id="cb2-33"><a href="#cb2-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub27 has common genes 367 ...</span></span>
+<span id="cb2-34"><a href="#cb2-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub28 has common genes 356 ...</span></span>
+<span id="cb2-35"><a href="#cb2-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub29 has common genes 358 ...</span></span>
+<span id="cb2-36"><a href="#cb2-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub30 has common genes 350 ...</span></span>
+<span id="cb2-37"><a href="#cb2-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub31 has common genes 348 ...</span></span>
+<span id="cb2-38"><a href="#cb2-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub32 has common genes 365 ...</span></span>
+<span id="cb2-39"><a href="#cb2-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub33 has common genes 370 ...</span></span>
+<span id="cb2-40"><a href="#cb2-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub34 has common genes 366 ...</span></span>
+<span id="cb2-41"><a href="#cb2-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub35 has common genes 368 ...</span></span>
+<span id="cb2-42"><a href="#cb2-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub36 has common genes 362 ...</span></span>
+<span id="cb2-43"><a href="#cb2-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub37 has common genes 363 ...</span></span>
+<span id="cb2-44"><a href="#cb2-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub38 has common genes 363 ...</span></span>
+<span id="cb2-45"><a href="#cb2-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub39 has common genes 361 ...</span></span>
+<span id="cb2-46"><a href="#cb2-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub40 has common genes 362 ...</span></span>
+<span id="cb2-47"><a href="#cb2-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub41 has common genes 362 ...</span></span>
+<span id="cb2-48"><a href="#cb2-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub42 has common genes 363 ...</span></span>
+<span id="cb2-49"><a href="#cb2-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub43 has common genes 365 ...</span></span>
+<span id="cb2-50"><a href="#cb2-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub44 has common genes 371 ...</span></span>
+<span id="cb2-51"><a href="#cb2-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub45 has common genes 365 ...</span></span>
+<span id="cb2-52"><a href="#cb2-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub46 has common genes 364 ...</span></span>
+<span id="cb2-53"><a href="#cb2-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub47 has common genes 367 ...</span></span>
+<span id="cb2-54"><a href="#cb2-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub48 has common genes 362 ...</span></span>
+<span id="cb2-55"><a href="#cb2-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub49 has common genes 352 ...</span></span>
+<span id="cb2-56"><a href="#cb2-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub50 has common genes 353 ...</span></span>
+<span id="cb2-57"><a href="#cb2-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub51 has common genes 371 ...</span></span>
+<span id="cb2-58"><a href="#cb2-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub52 has common genes 363 ...</span></span>
+<span id="cb2-59"><a href="#cb2-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub53 has common genes 369 ...</span></span>
+<span id="cb2-60"><a href="#cb2-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub54 has common genes 370 ...</span></span>
+<span id="cb2-61"><a href="#cb2-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub55 has common genes 373 ...</span></span>
+<span id="cb2-62"><a href="#cb2-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub56 has common genes 369 ...</span></span>
+<span id="cb2-63"><a href="#cb2-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub57 has common genes 365 ...</span></span>
+<span id="cb2-64"><a href="#cb2-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub58 has common genes 373 ...</span></span>
+<span id="cb2-65"><a href="#cb2-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub59 has common genes 369 ...</span></span>
+<span id="cb2-66"><a href="#cb2-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub60 has common genes 370 ...</span></span>
+<span id="cb2-67"><a href="#cb2-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub61 has common genes 372 ...</span></span>
+<span id="cb2-68"><a href="#cb2-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub62 has common genes 343 ...</span></span>
+<span id="cb2-69"><a href="#cb2-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub63 has common genes 352 ...</span></span>
+<span id="cb2-70"><a href="#cb2-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub64 has common genes 356 ...</span></span>
+<span id="cb2-71"><a href="#cb2-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub65 has common genes 365 ...</span></span>
+<span id="cb2-72"><a href="#cb2-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub66 has common genes 364 ...</span></span>
+<span id="cb2-73"><a href="#cb2-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub67 has common genes 352 ...</span></span>
+<span id="cb2-74"><a href="#cb2-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub68 has common genes 366 ...</span></span>
+<span id="cb2-75"><a href="#cb2-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub69 has common genes 359 ...</span></span>
+<span id="cb2-76"><a href="#cb2-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub70 has common genes 373 ...</span></span>
+<span id="cb2-77"><a href="#cb2-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub71 has common genes 361 ...</span></span>
+<span id="cb2-78"><a href="#cb2-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub72 has common genes 350 ...</span></span>
+<span id="cb2-79"><a href="#cb2-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub73 has common genes 357 ...</span></span>
+<span id="cb2-80"><a href="#cb2-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub74 has common genes 360 ...</span></span>
+<span id="cb2-81"><a href="#cb2-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub75 has common genes 362 ...</span></span>
+<span id="cb2-82"><a href="#cb2-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub76 has common genes 373 ...</span></span>
+<span id="cb2-83"><a href="#cb2-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub77 has common genes 364 ...</span></span>
+<span id="cb2-84"><a href="#cb2-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub78 has common genes 372 ...</span></span>
+<span id="cb2-85"><a href="#cb2-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub79 has common genes 355 ...</span></span>
+<span id="cb2-86"><a href="#cb2-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub80 has common genes 362 ...</span></span>
+<span id="cb2-87"><a href="#cb2-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub81 has common genes 357 ...</span></span>
+<span id="cb2-88"><a href="#cb2-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub82 has common genes 375 ...</span></span>
+<span id="cb2-89"><a href="#cb2-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub83 has common genes 349 ...</span></span>
+<span id="cb2-90"><a href="#cb2-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub84 has common genes 367 ...</span></span>
+<span id="cb2-91"><a href="#cb2-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub85 has common genes 369 ...</span></span>
+<span id="cb2-92"><a href="#cb2-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub86 has common genes 357 ...</span></span>
+<span id="cb2-93"><a href="#cb2-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub87 has common genes 368 ...</span></span>
+<span id="cb2-94"><a href="#cb2-94" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub88 has common genes 362 ...</span></span>
+<span id="cb2-95"><a href="#cb2-95" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub89 has common genes 356 ...</span></span></code></pre></div>
+</div>
+<div id="accessing-the-results" class="section level2">
+<h2>Accessing the results</h2>
+<p>Results are stored in the metadata slots with the type and name of
+the analysis</p>
+<div class="sourceCode" id="cb3"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb3-1"><a href="#cb3-1" aria-hidden="true" tabindex="-1"></a><span class="fu">metadata</span>(sce2)[[<span class="st">&quot;sctk&quot;</span>]][[<span class="st">&quot;music&quot;</span>]][[<span class="st">&quot;testEstCellProp&quot;</span>]][[<span class="st">&quot;Est.prop.weighted&quot;</span>]]</span>
+<span id="cb3-2"><a href="#cb3-2" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;            delta        alpha        gamma       ductal       acinar       beta</span></span>
+<span id="cb3-3"><a href="#cb3-3" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub1  0.07672701 0.0000000000 0.1188423052 0.1728460279 0.0404630278 0.42505590</span></span>
+<span id="cb3-4"><a href="#cb3-4" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub2  0.08928845 0.1283872332 0.1391952603 0.0718919390 0.0066484116 0.43546989</span></span>
+<span id="cb3-5"><a href="#cb3-5" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub3  0.33719865 0.0017058774 0.1311499114 0.0515202315 0.1060023903 0.24998466</span></span>
+<span id="cb3-6"><a href="#cb3-6" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub4  0.09383029 0.0000000000 0.3312549271 0.0175890061 0.0111245211 0.38933019</span></span>
+<span id="cb3-7"><a href="#cb3-7" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub5  0.13927066 0.0000000000 0.0009343726 0.0475664350 0.0237709835 0.39148459</span></span>
+<span id="cb3-8"><a href="#cb3-8" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub6  0.23696698 0.0000000000 0.0009654792 0.0000000000 0.0052786594 0.67907583</span></span>
+<span id="cb3-9"><a href="#cb3-9" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub7  0.29152906 0.0000000000 0.0743863979 0.0006344544 0.0242100841 0.42964550</span></span>
+<span id="cb3-10"><a href="#cb3-10" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub8  0.07077669 0.0642466941 0.3086180374 0.0000000000 0.0816376976 0.36023538</span></span>
+<span id="cb3-11"><a href="#cb3-11" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub9  0.29575940 0.0000000000 0.0025241313 0.1486827100 0.0299992817 0.36555289</span></span>
+<span id="cb3-12"><a href="#cb3-12" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub10 0.29729469 0.0000000000 0.0019723594 0.1673178967 0.0142048191 0.42677514</span></span>
+<span id="cb3-13"><a href="#cb3-13" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub11 0.37407810 0.0000000000 0.0452465800 0.0000000000 0.5364857082 0.01514925</span></span>
+<span id="cb3-14"><a href="#cb3-14" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub12 0.35829744 0.0000000000 0.0020831951 0.1295457809 0.0598204504 0.29301326</span></span>
+<span id="cb3-15"><a href="#cb3-15" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub13 0.30534238 0.0000000000 0.1289410506 0.0546600233 0.0440135536 0.37081796</span></span>
+<span id="cb3-16"><a href="#cb3-16" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub14 0.01132449 0.0000000000 0.1252112961 0.4067666335 0.0545987466 0.25340850</span></span>
+<span id="cb3-17"><a href="#cb3-17" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub15 0.17404620 0.0000000000 0.0883056370 0.0911327320 0.0034812672 0.34149260</span></span>
+<span id="cb3-18"><a href="#cb3-18" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub16 0.23260573 0.0000000000 0.2530947289 0.0009168109 0.0488354728 0.33172771</span></span>
+<span id="cb3-19"><a href="#cb3-19" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub17 0.29006987 0.0000000000 0.0156976006 0.0121390266 0.0215741568 0.36763915</span></span>
+<span id="cb3-20"><a href="#cb3-20" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub18 0.28211776 0.0023082686 0.2014336913 0.0009571382 0.0587081187 0.34839101</span></span>
+<span id="cb3-21"><a href="#cb3-21" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub19 0.29955840 0.0003943000 0.1702440906 0.0250927800 0.0816203436 0.33305434</span></span>
+<span id="cb3-22"><a href="#cb3-22" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub20 0.00000000 0.0728971132 0.2801050248 0.0361570046 0.0034549886 0.42267692</span></span>
+<span id="cb3-23"><a href="#cb3-23" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub21 0.06597800 0.0877517785 0.2558406518 0.0321829530 0.0049552894 0.36913196</span></span>
+<span id="cb3-24"><a href="#cb3-24" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub22 0.17796521 0.0000000000 0.1018246925 0.0821743856 0.0266514177 0.42935693</span></span>
+<span id="cb3-25"><a href="#cb3-25" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub23 0.12434933 0.0000000000 0.3908934760 0.1088561586 0.0320309464 0.19256383</span></span>
+<span id="cb3-26"><a href="#cb3-26" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub24 0.26810380 0.0000000000 0.0917170554 0.0640158300 0.0610765595 0.38064294</span></span>
+<span id="cb3-27"><a href="#cb3-27" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub25 0.00000000 0.0012571313 0.3410841246 0.3301498221 0.0316633225 0.13608545</span></span>
+<span id="cb3-28"><a href="#cb3-28" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub26 0.29976787 0.0000000000 0.0000000000 0.0939183492 0.0585629182 0.39859538</span></span>
+<span id="cb3-29"><a href="#cb3-29" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub27 0.30067445 0.0021029891 0.1934997926 0.0001580272 0.1972247838 0.24074020</span></span>
+<span id="cb3-30"><a href="#cb3-30" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub28 0.14245046 0.0926310422 0.0000000000 0.0471983974 0.0079687804 0.26450353</span></span>
+<span id="cb3-31"><a href="#cb3-31" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub29 0.40615168 0.0013198458 0.0092443222 0.0311289200 0.0251094894 0.41194165</span></span>
+<span id="cb3-32"><a href="#cb3-32" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub30 0.02887310 0.0028896445 0.4143134813 0.0149074346 0.0187624456 0.42680783</span></span>
+<span id="cb3-33"><a href="#cb3-33" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub31 0.38318830 0.0000000000 0.0023454154 0.0741750117 0.0125339407 0.36610073</span></span>
+<span id="cb3-34"><a href="#cb3-34" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub32 0.32362336 0.0000000000 0.0494464397 0.0258183763 0.1726771619 0.32423277</span></span>
+<span id="cb3-35"><a href="#cb3-35" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub33 0.41463661 0.0000000000 0.0000000000 0.0000000000 0.0678939771 0.29496335</span></span>
+<span id="cb3-36"><a href="#cb3-36" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub34 0.26923679 0.0017080233 0.2541014553 0.0000000000 0.1684798168 0.25383244</span></span>
+<span id="cb3-37"><a href="#cb3-37" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub35 0.14562120 0.0000000000 0.2857892558 0.0001321820 0.2295222614 0.20382928</span></span>
+<span id="cb3-38"><a href="#cb3-38" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub36 0.10840569 0.0000000000 0.2147285834 0.2293618209 0.1540475163 0.23871797</span></span>
+<span id="cb3-39"><a href="#cb3-39" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub37 0.17482374 0.0069389797 0.2611557396 0.0722400859 0.0100293205 0.34184343</span></span>
+<span id="cb3-40"><a href="#cb3-40" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub38 0.17062739 0.0553964663 0.2679693163 0.0002209455 0.0193834190 0.38568693</span></span>
+<span id="cb3-41"><a href="#cb3-41" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub39 0.26325843 0.0000000000 0.0781378755 0.0000000000 0.2439275719 0.41390157</span></span>
+<span id="cb3-42"><a href="#cb3-42" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub40 0.32651133 0.0000000000 0.0778136122 0.0012243680 0.3059133589 0.04659088</span></span>
+<span id="cb3-43"><a href="#cb3-43" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub41 0.42024476 0.0007112143 0.0022284053 0.0323968983 0.0709553433 0.42411330</span></span>
+<span id="cb3-44"><a href="#cb3-44" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub42 0.43314016 0.0000000000 0.0012024055 0.1409163124 0.0943917177 0.27713259</span></span>
+<span id="cb3-45"><a href="#cb3-45" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub43 0.35969993 0.0606068849 0.0000000000 0.0707461519 0.0215664876 0.25110948</span></span>
+<span id="cb3-46"><a href="#cb3-46" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub44 0.16323668 0.0000000000 0.2726850319 0.0770808036 0.0443862564 0.25156516</span></span>
+<span id="cb3-47"><a href="#cb3-47" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub45 0.37996400 0.0000000000 0.1103951824 0.0062475170 0.0120823482 0.23339296</span></span>
+<span id="cb3-48"><a href="#cb3-48" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub46 0.40031659 0.0000000000 0.0000000000 0.0000000000 0.1682555459 0.28467233</span></span>
+<span id="cb3-49"><a href="#cb3-49" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub47 0.26916251 0.0001328204 0.1354925901 0.0000000000 0.1891668926 0.26211860</span></span>
+<span id="cb3-50"><a href="#cb3-50" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub48 0.31791039 0.0418583856 0.1801293732 0.0011599102 0.0955604349 0.29216711</span></span>
+<span id="cb3-51"><a href="#cb3-51" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub49 0.22204893 0.0000000000 0.1355165274 0.0911650161 0.0041783270 0.39653348</span></span>
+<span id="cb3-52"><a href="#cb3-52" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub50 0.28525532 0.0000000000 0.0022532666 0.0421105832 0.0178978197 0.50187977</span></span>
+<span id="cb3-53"><a href="#cb3-53" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub51 0.28149670 0.0009567642 0.1243323039 0.0310186400 0.0524816964 0.38065677</span></span>
+<span id="cb3-54"><a href="#cb3-54" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub52 0.38928123 0.0000000000 0.0535959358 0.0134690943 0.1093987017 0.29935814</span></span>
+<span id="cb3-55"><a href="#cb3-55" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub53 0.25716603 0.0000000000 0.1413949661 0.1245747358 0.1775746429 0.12234209</span></span>
+<span id="cb3-56"><a href="#cb3-56" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub54 0.27989282 0.0001729741 0.2109511691 0.0312538292 0.1315560872 0.28088741</span></span>
+<span id="cb3-57"><a href="#cb3-57" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub55 0.34675281 0.0001816306 0.1353181184 0.0116877930 0.3367918011 0.09934961</span></span>
+<span id="cb3-58"><a href="#cb3-58" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub56 0.31050823 0.0000000000 0.0022470695 0.2020072243 0.0772527771 0.04274706</span></span>
+<span id="cb3-59"><a href="#cb3-59" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub57 0.11466642 0.0000000000 0.2174550282 0.0686834079 0.0101131660 0.36957790</span></span>
+<span id="cb3-60"><a href="#cb3-60" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub58 0.34536904 0.0000000000 0.0922098548 0.0123719047 0.0322131002 0.35898040</span></span>
+<span id="cb3-61"><a href="#cb3-61" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub59 0.26025512 0.0000000000 0.1490202467 0.0934546599 0.1461303641 0.25149440</span></span>
+<span id="cb3-62"><a href="#cb3-62" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub60 0.08742266 0.0000000000 0.2017007091 0.3486084528 0.1110995070 0.12695358</span></span>
+<span id="cb3-63"><a href="#cb3-63" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub61 0.09350420 0.0000000000 0.1929107328 0.0000000000 0.5926761697 0.06624406</span></span>
+<span id="cb3-64"><a href="#cb3-64" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub62 0.03570554 0.2027431786 0.1013130130 0.0487279728 0.0007828434 0.45681263</span></span>
+<span id="cb3-65"><a href="#cb3-65" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub63 0.11241424 0.1218842722 0.0012725230 0.0000000000 0.0071538361 0.27916308</span></span>
+<span id="cb3-66"><a href="#cb3-66" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub64 0.44261864 0.0000000000 0.0000000000 0.0000000000 0.0337908561 0.25862434</span></span>
+<span id="cb3-67"><a href="#cb3-67" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub65 0.42491511 0.0007989062 0.1139343092 0.0796429801 0.0647712048 0.20891283</span></span>
+<span id="cb3-68"><a href="#cb3-68" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub66 0.38227865 0.0000000000 0.0910096594 0.0304060727 0.0584982345 0.31244761</span></span>
+<span id="cb3-69"><a href="#cb3-69" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub67 0.43004447 0.0000000000 0.0112227325 0.0008749007 0.0873440149 0.42117925</span></span>
+<span id="cb3-70"><a href="#cb3-70" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub68 0.17721880 0.0030927694 0.2735184187 0.0000000000 0.0608344233 0.34497768</span></span>
+<span id="cb3-71"><a href="#cb3-71" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub69 0.29903156 0.0000000000 0.1302442664 0.0000000000 0.0428720677 0.40676617</span></span>
+<span id="cb3-72"><a href="#cb3-72" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub70 0.19687585 0.0000000000 0.1723489922 0.1163257369 0.0100159777 0.32282551</span></span>
+<span id="cb3-73"><a href="#cb3-73" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub71 0.09242161 0.0000000000 0.2227437184 0.2359031272 0.0024590308 0.28285973</span></span>
+<span id="cb3-74"><a href="#cb3-74" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub72 0.07299567 0.0013535570 0.2543674851 0.0395024469 0.0023457798 0.55103054</span></span>
+<span id="cb3-75"><a href="#cb3-75" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub73 0.28885024 0.0000000000 0.0974637725 0.1500008765 0.0106136142 0.21329515</span></span>
+<span id="cb3-76"><a href="#cb3-76" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub74 0.11842467 0.0000000000 0.1654178310 0.4555307369 0.0567578897 0.01288730</span></span>
+<span id="cb3-77"><a href="#cb3-77" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub75 0.15115140 0.0000000000 0.1244713720 0.1757267505 0.0071160118 0.36697146</span></span>
+<span id="cb3-78"><a href="#cb3-78" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub76 0.16378402 0.0012742610 0.3612890728 0.0010548290 0.0261926778 0.29041042</span></span>
+<span id="cb3-79"><a href="#cb3-79" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub77 0.31576011 0.0000000000 0.0472843921 0.0810445916 0.0362724142 0.34230545</span></span>
+<span id="cb3-80"><a href="#cb3-80" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub78 0.09623763 0.0438768918 0.3275531088 0.0163753563 0.0072412901 0.29907087</span></span>
+<span id="cb3-81"><a href="#cb3-81" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub79 0.15542488 0.0000000000 0.0826333583 0.1762977934 0.0191788824 0.40678897</span></span>
+<span id="cb3-82"><a href="#cb3-82" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub80 0.05171044 0.0000000000 0.0394263982 0.3158884506 0.0099034912 0.43788866</span></span>
+<span id="cb3-83"><a href="#cb3-83" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub81 0.15024374 0.0000000000 0.1452417424 0.0439226333 0.0022028074 0.37840200</span></span>
+<span id="cb3-84"><a href="#cb3-84" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub82 0.14069951 0.0000000000 0.3785912946 0.1031188200 0.1928281455 0.11058211</span></span>
+<span id="cb3-85"><a href="#cb3-85" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub83 0.37522990 0.0000000000 0.0010692745 0.1375084757 0.0258611352 0.27932226</span></span>
+<span id="cb3-86"><a href="#cb3-86" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub84 0.12620822 0.0000000000 0.0035294551 0.1690197589 0.0148935772 0.52778224</span></span>
+<span id="cb3-87"><a href="#cb3-87" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub85 0.08951661 0.0000000000 0.1527261437 0.1733092500 0.0148223318 0.42975076</span></span>
+<span id="cb3-88"><a href="#cb3-88" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub86 0.14939936 0.0000000000 0.1215321198 0.0657890173 0.0115132688 0.57655707</span></span>
+<span id="cb3-89"><a href="#cb3-89" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub87 0.33789459 0.0019208803 0.0616943777 0.1314006309 0.0388670231 0.30313718</span></span>
+<span id="cb3-90"><a href="#cb3-90" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub88 0.18413442 0.0032882606 0.4292596104 0.0000000000 0.0022969170 0.33244606</span></span>
+<span id="cb3-91"><a href="#cb3-91" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub89 0.16695907 0.0000000000 0.1387026658 0.0000000000 0.0091213363 0.49704204</span></span>
+<span id="cb3-92"><a href="#cb3-92" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt;       unclassified endocrine co-expression          PSC  endothelial    epsilon</span></span>
+<span id="cb3-93"><a href="#cb3-93" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub1            0.0000000000             0 0.0026016708 3.606164e-04 0.16310344</span></span>
+<span id="cb3-94"><a href="#cb3-94" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub2            0.0000000000             0 0.0058555423 0.000000e+00 0.12326327</span></span>
+<span id="cb3-95"><a href="#cb3-95" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub3            0.0000000000             0 0.0322392156 1.089799e-04 0.09009008</span></span>
+<span id="cb3-96"><a href="#cb3-96" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub4            0.0000000000             0 0.0023498295 0.000000e+00 0.15452123</span></span>
+<span id="cb3-97"><a href="#cb3-97" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub5            0.2933782414             0 0.0000000000 6.001128e-03 0.09759360</span></span>
+<span id="cb3-98"><a href="#cb3-98" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub6            0.0043283093             0 0.0323073733 6.691465e-05 0.04101045</span></span>
+<span id="cb3-99"><a href="#cb3-99" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub7            0.0401458303             0 0.0024258119 2.413517e-04 0.13678151</span></span>
+<span id="cb3-100"><a href="#cb3-100" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub8            0.0000000000             0 0.0057743217 8.310638e-04 0.10788012</span></span>
+<span id="cb3-101"><a href="#cb3-101" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub9            0.0150761917             0 0.0000000000 0.000000e+00 0.14240540</span></span>
+<span id="cb3-102"><a href="#cb3-102" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub10           0.0011316812             0 0.0000000000 3.212515e-04 0.09098215</span></span>
+<span id="cb3-103"><a href="#cb3-103" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub11           0.0000000000             0 0.0042006579 3.465784e-04 0.02449312</span></span>
+<span id="cb3-104"><a href="#cb3-104" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub12           0.0243772942             0 0.0076210736 3.591115e-04 0.12488240</span></span>
+<span id="cb3-105"><a href="#cb3-105" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub13           0.0000000000             0 0.0047224791 5.783337e-04 0.09092423</span></span>
+<span id="cb3-106"><a href="#cb3-106" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub14           0.0000000000             0 0.0023555571 5.321211e-04 0.14580265</span></span>
+<span id="cb3-107"><a href="#cb3-107" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub15           0.1792201637             0 0.0008080240 0.000000e+00 0.12151337</span></span>
+<span id="cb3-108"><a href="#cb3-108" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub16           0.0000000000             0 0.0036007033 1.254639e-04 0.12909337</span></span>
+<span id="cb3-109"><a href="#cb3-109" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub17           0.2015531940             0 0.0447992322 0.000000e+00 0.04652777</span></span>
+<span id="cb3-110"><a href="#cb3-110" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub18           0.0000000000             0 0.0049854071 5.999378e-05 0.10103862</span></span>
+<span id="cb3-111"><a href="#cb3-111" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub19           0.0000000000             0 0.0031048289 4.122067e-04 0.08651871</span></span>
+<span id="cb3-112"><a href="#cb3-112" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub20           0.0000000000             0 0.0028529222 6.446029e-04 0.18121142</span></span>
+<span id="cb3-113"><a href="#cb3-113" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub21           0.0000000000             0 0.0051031653 7.151701e-04 0.17834103</span></span>
+<span id="cb3-114"><a href="#cb3-114" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub22           0.0000000000             0 0.0041016130 0.000000e+00 0.17792575</span></span>
+<span id="cb3-115"><a href="#cb3-115" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub23           0.0000000000             0 0.0020886954 0.000000e+00 0.14921757</span></span>
+<span id="cb3-116"><a href="#cb3-116" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub24           0.0028838523             0 0.0092977578 9.057670e-05 0.12217163</span></span>
+<span id="cb3-117"><a href="#cb3-117" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub25           0.0000000000             0 0.0023817754 1.548884e-04 0.15722348</span></span>
+<span id="cb3-118"><a href="#cb3-118" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub26           0.0528262684             0 0.0010926958 8.595173e-03 0.08664135</span></span>
+<span id="cb3-119"><a href="#cb3-119" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub27           0.0000000000             0 0.0018727815 2.319126e-04 0.06349506</span></span>
+<span id="cb3-120"><a href="#cb3-120" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub28           0.2953249229             0 0.0003878964 7.428749e-03 0.14210622</span></span>
+<span id="cb3-121"><a href="#cb3-121" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub29           0.0000000000             0 0.0006631413 3.872624e-04 0.11405369</span></span>
+<span id="cb3-122"><a href="#cb3-122" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub30           0.0000000000             0 0.0010899190 2.535373e-04 0.09210261</span></span>
+<span id="cb3-123"><a href="#cb3-123" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub31           0.1022728241             0 0.0004438309 3.970925e-04 0.05854286</span></span>
+<span id="cb3-124"><a href="#cb3-124" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub32           0.0000000000             0 0.0759660656 9.196086e-05 0.02814387</span></span>
+<span id="cb3-125"><a href="#cb3-125" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub33           0.2021416555             0 0.0043968515 0.000000e+00 0.01596756</span></span>
+<span id="cb3-126"><a href="#cb3-126" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub34           0.0334820358             0 0.0019678687 2.187688e-04 0.01697280</span></span>
+<span id="cb3-127"><a href="#cb3-127" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub35           0.0763145300             0 0.0026665401 8.647685e-04 0.05525999</span></span>
+<span id="cb3-128"><a href="#cb3-128" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub36           0.0000000000             0 0.0013530593 4.826935e-04 0.05290267</span></span>
+<span id="cb3-129"><a href="#cb3-129" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub37           0.0000000000             0 0.0054323771 1.243995e-04 0.12741193</span></span>
+<span id="cb3-130"><a href="#cb3-130" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub38           0.0000000000             0 0.0040386045 1.543056e-04 0.09652262</span></span>
+<span id="cb3-131"><a href="#cb3-131" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub39           0.0006373648             0 0.0001371895 0.000000e+00 0.00000000</span></span>
+<span id="cb3-132"><a href="#cb3-132" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub40           0.1739011681             0 0.0024608824 2.459578e-04 0.06533844</span></span>
+<span id="cb3-133"><a href="#cb3-133" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub41           0.0000000000             0 0.0010711487 1.603432e-04 0.04811859</span></span>
+<span id="cb3-134"><a href="#cb3-134" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub42           0.0000000000             0 0.0153669658 6.748037e-04 0.03717504</span></span>
+<span id="cb3-135"><a href="#cb3-135" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub43           0.1190785707             0 0.0011981059 1.875298e-03 0.11411908</span></span>
+<span id="cb3-136"><a href="#cb3-136" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub44           0.0828954108             0 0.0030151632 1.335478e-04 0.10500195</span></span>
+<span id="cb3-137"><a href="#cb3-137" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub45           0.1410737403             0 0.0086847568 0.000000e+00 0.10815949</span></span>
+<span id="cb3-138"><a href="#cb3-138" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub46           0.0788000633             0 0.0134423913 0.000000e+00 0.05451308</span></span>
+<span id="cb3-139"><a href="#cb3-139" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub47           0.0821728287             0 0.0027035856 5.628958e-04 0.05848729</span></span>
+<span id="cb3-140"><a href="#cb3-140" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub48           0.0000000000             0 0.0044557056 1.257770e-04 0.06663291</span></span>
+<span id="cb3-141"><a href="#cb3-141" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub49           0.0007515460             0 0.0011643231 0.000000e+00 0.14864185</span></span>
+<span id="cb3-142"><a href="#cb3-142" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub50           0.0511194720             0 0.0118337057 0.000000e+00 0.08765006</span></span>
+<span id="cb3-143"><a href="#cb3-143" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub51           0.0080016557             0 0.0025063795 8.574842e-04 0.11769161</span></span>
+<span id="cb3-144"><a href="#cb3-144" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub52           0.0225044557             0 0.0002072772 6.479609e-05 0.11212036</span></span>
+<span id="cb3-145"><a href="#cb3-145" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub53           0.0468600037             0 0.0048015060 7.908842e-05 0.12520694</span></span>
+<span id="cb3-146"><a href="#cb3-146" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub54           0.0000000000             0 0.0027801246 3.643797e-04 0.06214121</span></span>
+<span id="cb3-147"><a href="#cb3-147" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub55           0.0000000000             0 0.0019315672 6.829559e-04 0.06730371</span></span>
+<span id="cb3-148"><a href="#cb3-148" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub56           0.2939964838             0 0.0013856093 9.113505e-05 0.06976441</span></span>
+<span id="cb3-149"><a href="#cb3-149" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub57           0.0900238261             0 0.0018253642 1.417537e-04 0.12751313</span></span>
+<span id="cb3-150"><a href="#cb3-150" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub58           0.0078768834             0 0.0018131044 0.000000e+00 0.14916572</span></span>
+<span id="cb3-151"><a href="#cb3-151" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub59           0.0000000000             0 0.0022767298 1.979581e-04 0.09717052</span></span>
+<span id="cb3-152"><a href="#cb3-152" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub60           0.0279715190             0 0.0014597727 1.111653e-04 0.09467264</span></span>
+<span id="cb3-153"><a href="#cb3-153" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub61           0.0258312420             0 0.0010728988 0.000000e+00 0.02776070</span></span>
+<span id="cb3-154"><a href="#cb3-154" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub62           0.0000000000             0 0.0015869461 4.386016e-04 0.15188928</span></span>
+<span id="cb3-155"><a href="#cb3-155" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub63           0.3442891131             0 0.0006973858 0.000000e+00 0.13312555</span></span>
+<span id="cb3-156"><a href="#cb3-156" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub64           0.2125634870             0 0.0008861021 0.000000e+00 0.05151657</span></span>
+<span id="cb3-157"><a href="#cb3-157" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub65           0.0000000000             0 0.0129642101 1.302422e-04 0.09393020</span></span>
+<span id="cb3-158"><a href="#cb3-158" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub66           0.0000000000             0 0.0089342917 4.981308e-04 0.11592736</span></span>
+<span id="cb3-159"><a href="#cb3-159" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub67           0.0124425903             0 0.0015488507 3.310045e-04 0.03501218</span></span>
+<span id="cb3-160"><a href="#cb3-160" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub68           0.0000000000             0 0.0046453299 7.123693e-04 0.13500020</span></span>
+<span id="cb3-161"><a href="#cb3-161" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub69           0.0110284177             0 0.0013107437 0.000000e+00 0.10874677</span></span>
+<span id="cb3-162"><a href="#cb3-162" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub70           0.0419212806             0 0.0036093369 2.978064e-04 0.13577951</span></span>
+<span id="cb3-163"><a href="#cb3-163" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub71           0.0000000000             0 0.0000000000 1.003352e-04 0.16351245</span></span>
+<span id="cb3-164"><a href="#cb3-164" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub72           0.0000000000             0 0.0015909328 2.425733e-04 0.07657101</span></span>
+<span id="cb3-165"><a href="#cb3-165" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub73           0.0762856915             0 0.0000000000 0.000000e+00 0.16349065</span></span>
+<span id="cb3-166"><a href="#cb3-166" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub74           0.0006047167             0 0.0000000000 1.383643e-05 0.19036302</span></span>
+<span id="cb3-167"><a href="#cb3-167" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub75           0.0192342349             0 0.0011757964 3.233597e-04 0.15382962</span></span>
+<span id="cb3-168"><a href="#cb3-168" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub76           0.0000000000             0 0.0022554400 1.933355e-04 0.15354594</span></span>
+<span id="cb3-169"><a href="#cb3-169" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub77           0.0401783973             0 0.0033775865 3.077270e-04 0.13346933</span></span>
+<span id="cb3-170"><a href="#cb3-170" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub78           0.0000000000             0 0.0075600125 7.570928e-05 0.20200913</span></span>
+<span id="cb3-171"><a href="#cb3-171" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub79           0.0583331887             0 0.0025657898 0.000000e+00 0.09877714</span></span>
+<span id="cb3-172"><a href="#cb3-172" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub80           0.0225513640             0 0.0000000000 0.000000e+00 0.12263119</span></span>
+<span id="cb3-173"><a href="#cb3-173" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub81           0.1219057535             0 0.0020336477 0.000000e+00 0.15604768</span></span>
+<span id="cb3-174"><a href="#cb3-174" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub82           0.0000000000             0 0.0202229454 6.644967e-03 0.04731220</span></span>
+<span id="cb3-175"><a href="#cb3-175" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub83           0.1517060647             0 0.0054259988 3.749999e-03 0.02012689</span></span>
+<span id="cb3-176"><a href="#cb3-176" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub84           0.0988114277             0 0.0022886165 2.416974e-04 0.05722501</span></span>
+<span id="cb3-177"><a href="#cb3-177" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub85           0.0250534016             0 0.0009503184 1.243211e-04 0.11374686</span></span>
+<span id="cb3-178"><a href="#cb3-178" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub86           0.0016116058             0 0.0040449144 0.000000e+00 0.06955264</span></span>
+<span id="cb3-179"><a href="#cb3-179" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub87           0.0000000000             0 0.0051268175 1.680323e-04 0.11979047</span></span>
+<span id="cb3-180"><a href="#cb3-180" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub88           0.0000000000             0 0.0016479068 1.926021e-04 0.04673422</span></span>
+<span id="cb3-181"><a href="#cb3-181" aria-hidden="true" tabindex="-1"></a><span class="co">#&gt; Sub89           0.0609688682             0 0.0021059600 0.000000e+00 0.12510006</span></span></code></pre></div>
+</div>
+<div id="plotting-the-results" class="section level2">
+<h2>Plotting the results</h2>
+<p>The figure sizes have been customised so that you can easily put two
+images side-by-side.</p>
+<div class="sourceCode" id="cb4"><pre class="sourceCode r"><code class="sourceCode r"><span id="cb4-1"><a href="#cb4-1" aria-hidden="true" tabindex="-1"></a><span class="fu">plotMusicResults</span>(sce2, <span class="at">analysisType =</span><span class="st">&quot;EstCellProp&quot;</span>, <span class="at">analysisName =</span> <span class="st">&quot;testEstCellProp&quot;</span>)</span></code></pre></div>
+<p><img src="data:image/png;base64,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N/vvv3/JGe2xxx7OI1eykx5UDrQTDmgqRjv5oXSayoGOyAHVgGr8q77yyitm8cUXN5988olbuJAVVEnb6N+/v1lwwQVLXv2qq65yq6mS4iH03HPPufXF3nnnHWkyzz77rPnzn/9sVlpppbhNN5QD7YEDKoBq/Cvhwerdu7f5+uuvzaxZs1wc0WeffWZGjhxpDjrooJJX/9e//mUAolnUUAhhBn366afSZAiI/Oijj1QAxRzRjfbCARVANf6lAJVZE554IiFc64DS5QiX/YorrmjOPPPMuOsf//jHeFs27rnnHifkZF8/lQPthQOKAbWXX0rnqRzogBxQAdQBf1T9SsqB9sIBFUDt5ZfSeSoHOiAHVAB1wB9Vv5JyoL1wQEHo9vJLzZ/nf//7X/Of//zHgdMy9RkzZhiy8z/++GPX9MUXX7iUju2331666KdyoCE5oAKoIX+W4pO67rrrzF/+8peC0q+UDPm///s/s8gii7gTiTnq0aOHUQFUnI96pDE4oAKoMX6HzLNYd911zbbbbmtuuummoudw7MEHHyx6XA8oBxqFAyqAGuWXaME80Hj+/ve/x6U+qFf07rvvOrOMYTner18/V1StBZfRU5UDrc4BFUCtztK2H3DMmDGuZMf3vvc9d/H333/fgAudcMIJbv+9994zlAG577772n5yekXlQAkOqAAqwZz2coi8srXXXtuQuiFErtjKK68suwahJMXvJ02aFGtLcYf5G9Qb4jjCjNrXIXr99dcLMCj6vPnmm65ULfWMJHeNlBOoT58+7lP/KQc8DthqfEolOGATRyP7QBb0sDWio5dffrmgzRYTi6x3qqCNHVvIPrJrghW02xo/0ZdfflnQZh/8yD6wBW22BnVkBUdB2+effx699dZbBW12TbHIri1W0GaXCIomTJhQ0MYObRwLkU3piH7yk59El19+eWRLg0Q28TXULdp5550L2q2GFW2yySbRb37zm+j88893xy655JLo97//ffSzn/0seuKJJwr6645yQDiQY8OTSg3awNpavGEXXnjhms4QbSKZAFrTizXQ4Mccc4wreLbYYou53LUDDzzQZeyT+PqDH/zArQ6y7777GoDwQw45xGDaWSHjkmH/+te/Gs5jDCuMXPG11VZbzZALd8QRR2iibAP9zo00lXZlgh188MHugeBGryXh6iZZ9K2n/Ks07dfP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" /><!-- --></p>
+</div>
+
+
+
+<!-- code folding -->
+
+
+<!-- dynamically load mathjax for compatibility with self-contained -->
+<script>
+  (function () {
+    var script = document.createElement("script");
+    script.type = "text/javascript";
+    script.src  = "https://mathjax.rstudio.com/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML";
+    document.getElementsByTagName("head")[0].appendChild(script);
+  })();
+</script>
+
+</body>
+</html>

@@ -1,3 +1,5 @@
+#' plotMusicResults function
+#'
 #' @title Plotting function of runMusic.R
 #' @description A wrapper that plots heatmap and cluster plots for results from runMusic.R
 #' @param inSCE A \link[SingleCellExperiment]{SingleCellExperiment} object.
@@ -6,17 +8,17 @@
 #' @param heatmapTitle Character. Title for heatmap; Default is NULL
 #' @param analysisName Character. User-defined analysis name.
 #' This will be used as the slot name and results can be stored and retrived from SCE object using this name
+#' @param colDataName The column name(s) in \code{colData} that need
+#' to be added to the annotation. See plotSCEHeatmap from SingleCellTK for more info
+#' @param rowDataName The column name(s) in \code{rowData} that need
+#' to be added to the annotation
+#' @param useAssay Choose the assay to be plotted with the heatmap. 
+#' @param scale scale input assay if set to TRUE. Default is FALSE
 #' @return SingleCellExperiment object containing the outputs of the
 #'  specified algorithms in the \link{colData}
 #' of \code{inSCE}.
 #' 
 #' @export
-
-require(singleCellTK)
-require(ggplot2)
-require(dplyr)
-require(S4Vectors)
-require(SingleCellExperiment)
 
 
 plotMusicResults<- function(inSCE, 
@@ -57,18 +59,24 @@ plotMusicResults<- function(inSCE,
     
     
     
-    
+    col_fun<-colorRamp2(c(0,0.2,0.4,0.6,0.8,1), hcl_palette = "RdBu")
     testBulk<-metadata(inSCE)[["sctk"]][["music"]][[analysisName]][[useAssay]]
     bulkinSCE<-SingleCellExperiment(assays = list(EstProps = testBulk))
     names(assays(bulkinSCE))<-useAssay
-    heatmap<-plotSCEHeatmap(bulkinSCE,  # Check version
-                            useAssay = useAssay, 
-                            rowLabel = T, 
-                            colLabel = T, 
-                            rowTitle = "Subjects",
-                            colTitle = "CellType",
-                            title = heatmapTitle,
-                            scale = scale)
+    heatmap<-singleCellTK::plotSCEHeatmap(bulkinSCE,  # Check version
+                                          useAssay = useAssay, 
+                                          rowLabel = T, 
+                                          colLabel = T, 
+                                          rowTitle = "Subjects",
+                                          colTitle = "CellType",
+                                          rowLabelSize = 10, 
+                                          colLabelSize = 10,
+                                          colorScheme = col_fun,
+                                          colDataName = colDataName,
+                                          rowDataName = rowDataName,
+                                          trim = c(0,1),
+                                          title = heatmapTitle,
+                                          scale = scale)
     return(heatmap)
   }
   
@@ -78,25 +86,25 @@ plotMusicResults<- function(inSCE,
   
   if(analysisType == "SingleCellClust"){
     plots<-.musicPlotclusters(inSCE,analysisName = analysisName)
-  #  metadata(inSCE)$sctk$music[[analysisName]][["Clusters"]]<- temp_results 
+    #  metadata(inSCE)$sctk$music[[analysisName]][["Clusters"]]<- temp_results 
   }
   else if(analysisType == "EstCellProp"){
     
-    plots<-.plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted" ,analysisName = analysisName )
+    plots<-.plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted" ,analysisName = analysisName, colDataName = colDataName, rowDataName = rowDataName,scale = scale )
     # Do if else for pulling the assay data and have one single call for the sce heatmap
     
     #metadata(inSCE)$sctk$music[[analysisName]][["Heatmap"]]<- temp_results 
     
   }
-    
+  
   else if(analysisType == "PreGroupedClustProp"){
-        
-    plots<- .plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted.cluster",analysisName = analysisName )
+    
+    plots<- .plotHeatmap(inSCE,heatmapTitle = heatmapTitle,useAssay = "Est.prop.weighted.cluster",analysisName = analysisName, colDataName = colDataName, rowDataName = rowDataName,scale = scale  )
     #metadata(inSCE)$sctk$music[[analysisName]][["Heatmap"]]<- temp_results 
     
   }
-
-
+  
+  
   return(plots)
 } 
 
